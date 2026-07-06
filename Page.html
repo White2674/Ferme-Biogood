@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferme BioGood — Boutique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep: #0D0F0B;
+    --bg-mid: #141710;
+    --panel: #1B1E16;
+    --panel-2: #23271D;
+    --panel-3: #2A3024;
+    --line: #323A29;
+    --line-soft: rgba(237,232,216,0.08);
+    --ink: #F4F1E1;
+    --ink-soft: #A8A896;
+    --amber: #E2B050;
+    --amber-dark: #C69335;
+    --rust: #C06A3B;
+    --leaf: #82A35E;
+    --leaf-dark: #658245;
+    --danger: #E06C53;
+    --radius: 16px;
+    --radius-lg: 24px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
+    color:var(--ink);
+    font-family:'Plus Jakarta Sans', sans-serif;
+    min-height:100vh;
+  }
+  #bgArt{position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; background-size:cover; background-position:center; background-repeat:no-repeat;}
+  #bgArt::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(13,15,11,0.5) 0%, rgba(13,15,11,0.85) 60%, rgba(10,12,9,0.98) 100%);}
+  #root{position:relative; z-index:1; max-width:1180px;margin:0 auto;padding:24px 20px 80px;}
+  h1,h2,h3{font-family:'Outfit', sans-serif; margin:0; letter-spacing:0px;}
+  a{color:inherit;}
+  button{font-family:inherit; cursor:pointer;}
+  ::selection{background:var(--amber); color:#12140F;}
+
+  /* ---------- HEADER ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; padding:12px 24px; background:rgba(27,30,22,0.6);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--line-soft);
+    border-radius:100px; color:var(--ink); margin-bottom:32px;
+    box-shadow:0 12px 40px rgba(0,0,0,0.4);
+  }
+  .brand{display:flex; align-items:center; gap:14px;}
+  
+  .brand-logo {
+    width: 52px; height: 52px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+  }
+
+  .brand-text h1{font-size:24px; letter-spacing:-0.5px; color:var(--ink); font-weight:800;}
+  .brand-text span{display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--amber); font-family:'Space Grotesk',monospace; font-weight:600; margin-top:0px;}
+  .nav{display:flex; gap:8px; background:rgba(0,0,0,0.25); padding:6px; border-radius:100px; border: 1px solid var(--line-soft);}
+  .nav button{
+    border:none; background:transparent; color:var(--ink-soft); padding:10px 20px;
+    border-radius:100px; font-size:14px; font-weight:600;
+    transition:all .2s ease;
+  }
+  .nav button.active{background:var(--amber); color:#1B1D16; box-shadow: 0 4px 12px rgba(226,176,80,0.3);}
+  .nav button:hover:not(.active){color:var(--ink); background: rgba(255,255,255,0.05);}
+
+  /* ---------- CATEGORY TABS ---------- */
+  .cats{display:flex; gap:10px; margin-bottom:32px; flex-wrap:wrap;}
+  .cats button{
+    border:1px solid var(--line); background:rgba(27,30,22,0.8); color:var(--ink-soft);
+    padding:10px 22px; border-radius:100px; font-size:14px; font-weight:600;
+    transition:all .2s ease; backdrop-filter: blur(8px);
+  }
+  .cats button.active{background:var(--leaf); border-color:var(--leaf); color:#12140F; box-shadow: 0 4px 16px rgba(130,163,94,0.3); font-weight:700;}
+  .cats button:hover:not(.active){border-color:var(--amber); color:var(--ink); transform:translateY(-2px);}
+
+  /* ---------- PRODUCT GRID ---------- */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:24px;}
+  
+  .product-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-lg);
+    position: relative; overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex; flex-direction: column;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .product-card:hover {
+    transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); border-color: var(--leaf);
+  }
+  .product-card-img {
+    width: 100%; aspect-ratio: 4/3; background: #0c0e09;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .product-card-img img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 0.5s ease;
+  }
+  .product-card:hover .product-card-img img { transform: scale(1.05); }
+  
+  .product-card-content {
+    padding: 20px; display: flex; flex-direction: column; gap: 14px; flex: 1;
+  }
+  .product-card .name {
+    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 22px; color: var(--ink);
+  }
+  
+  /* ESTHÉTIQUE PRIX MISE A JOUR */
+  .price-tag {
+    font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--amber);
+    font-size: 16px; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .price-tag::before { content:'•'; font-size:24px; color:var(--amber); line-height:0.8; margin-top:-2px;}
+  
+  .qty-row{display:flex; align-items:center; gap:8px; margin-top:4px;}
+  .stepper{
+    display:flex; align-items:center; border:1px solid var(--line); border-radius:12px; overflow:hidden;
+    background:rgba(255,255,255,0.02);
+  }
+  .stepper button{border:none; background:transparent; width:36px; height:36px; font-size:18px; font-weight:500; color:var(--ink); transition:all 0.2s;}
+  .stepper button:hover{background:var(--leaf); color:#fff;}
+  .stepper input.qty-input{
+    width:44px; text-align:center; border:none; border-radius:0; background:transparent;
+    padding:0; font-weight:600; font-size:15px; font-family:'Space Grotesk',monospace; color:var(--ink);
+    -moz-appearance:textfield;
+  }
+  .stepper input.qty-input::-webkit-outer-spin-button,
+  .stepper input.qty-input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+  .stepper input.qty-input:focus{outline:none;}
+  
+  .product-card .add-btn {
+    background: rgba(130,163,94,0.1); color: var(--leaf); border: 1px solid rgba(130,163,94,0.25); 
+    border-radius: 12px; padding: 14px 0; font-weight: 700; font-size: 14px; 
+    transition: all .2s ease; margin-top: auto; font-family:'Plus Jakarta Sans',sans-serif;
+  }
+  .product-card .add-btn:hover { background: var(--leaf); color: #fff; border-color:var(--leaf); box-shadow: 0 4px 12px rgba(130,163,94,0.3); }
+  .empty-note{color:var(--ink-soft); font-size:15px; padding:40px 0; text-align:center; grid-column: 1/-1;}
+
+  /* ---------- ANCIENNES CARTES ---------- */
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; position:relative; overflow:hidden;
+    transition:transform .2s, box-shadow .2s; display:flex; flex-direction:column; gap:12px;
+  }
+
+  /* ---------- CART ---------- */
+  .cart-fab{
+    position:fixed; bottom:32px; right:32px; background:var(--amber); color:#1B1D16;
+    border:none; border-radius:100px; padding:16px 24px; font-weight:700; font-size:15px;
+    box-shadow:0 12px 32px rgba(226,176,80,0.4); display:flex; align-items:center; gap:10px;
+    z-index:40; transition: transform 0.2s;
+  }
+  .cart-fab:hover { transform: scale(1.05); }
+  .cart-fab .badge{background:#1B1D16; color:var(--amber); border-radius:100px; padding:2px 10px; font-size:13px; font-family:'Space Grotesk',monospace; font-weight:700;}
+  .refresh-fab{
+    position:fixed; bottom:32px; right:32px; width:52px; height:52px; background:var(--panel-2); color:var(--ink);
+    border:1px solid var(--line); border-radius:100%; display:flex; align-items:center; justify-content:center;
+    font-size:22px; box-shadow:0 12px 28px rgba(0,0,0,0.5); z-index:60; transition: transform 0.2s, background 0.2s;
+  }
+  .refresh-fab:hover{ transform: rotate(180deg); background:var(--panel-3); }
+  .refresh-fab.with-cart{ bottom:100px; }
+  .drawer-overlay{position:fixed; inset:0; background:rgba(8,9,6,0.7); backdrop-filter:blur(8px); z-index:50; display:flex; justify-content:flex-end; animation: fadeIn 0.3s ease;}
+  @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+  
+  .drawer{
+    width:min(440px,100vw); background:var(--bg-mid); height:100%; padding:32px 24px;
+    display:flex; flex-direction:column; box-shadow:-20px 0 50px rgba(0,0,0,0.6);
+    overflow-y:auto; border-left:1px solid var(--line-soft);
+  }
+  .drawer h2{font-size:24px; margin-bottom:20px;}
+  .cart-item{display:flex; align-items:center; gap:14px; background:rgba(255,255,255,0.02); border:1px solid var(--line); border-radius:16px; padding:12px; margin-bottom:12px;}
+  .cart-item .ci-icon{font-size:24px;}
+  .cart-item .ci-info{flex:1;}
+  .cart-item .ci-info .n{font-weight:700; font-size:15px; font-family:'Outfit',sans-serif; margin-bottom:4px;}
+  .cart-item .ci-info .p{font-family:'Space Grotesk',monospace; font-size:13px; color:var(--ink-soft); font-weight:500;}
+  .cart-item button.rm{background:none; border:none; color:var(--danger); font-size:22px; font-weight:500; transition: color 0.2s; padding: 0 8px;}
+  .cart-item button.rm:hover{color:#fff;}
+  .cart-total{display:flex; justify-content:space-between; align-items:center; padding:20px 0; border-top:1px solid var(--line); margin-top:12px;}
+  .cart-total span:first-child{font-family:'Outfit',sans-serif; font-size:16px; color:var(--ink-soft); font-weight:600;}
+  .cart-total .amt{font-size:28px; font-weight:700; color:var(--amber); font-family:'Space Grotesk',monospace;}
+
+  /* ---------- FORMULAIRES ---------- */
+  label {
+    font-size: 14px; font-weight: 600; color: var(--ink); font-family: 'Outfit', sans-serif;
+    display: block; margin-bottom: 8px;
+  }
+  input, select, textarea {
+    width: 100%; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; 
+    background: rgba(255,255,255,0.02); color: var(--ink);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+  input::placeholder, textarea::placeholder {color:rgba(168,168,150,0.4);}
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--amber); background: rgba(255,255,255,0.04);
+    box-shadow: 0 0 0 4px rgba(226, 176, 80, 0.15), inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .field{margin-bottom:20px;}
+  .primary-btn {
+    background: var(--leaf); color: #fff; border: none; border-radius: 12px; padding: 16px;
+    font-weight: 700; font-size: 15px; width: 100%; transition: all .2s ease; 
+    box-shadow: 0 4px 12px rgba(130,163,94,0.3);
+  }
+  .primary-btn:hover { background: var(--leaf-dark); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(130,163,94,0.4); }
+  .primary-btn:disabled{background:#4A4F3E; color:var(--ink-soft); cursor:not-allowed; transform:none; box-shadow:none;}
+
+  /* ---------- ADMIN ---------- */
+  .admin-shell{display:grid; grid-template-columns:220px 1fr; gap:24px;}
+  .admin-side{background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius); padding:20px; height:fit-content;}
+  .admin-side button{
+    display:block; width:100%; text-align:left; background:none; border:none; color:var(--ink-soft);
+    padding:12px 16px; border-radius:10px; font-size:14px; font-weight:600; margin-bottom:6px; 
+    transition: all 0.2s;
+  }
+  .admin-side button.active{background:var(--amber); color:#1B1D16; box-shadow: 0 4px 12px rgba(226,176,80,0.2);}
+  .admin-side button:hover:not(.active){background: rgba(255,255,255,0.05); color:var(--ink);}
+  .admin-side .who{color:var(--ink-soft); font-size:12px; font-family:'Space Grotesk',monospace; padding:0 12px 16px; border-bottom:1px solid var(--line); margin-bottom:12px;}
+  .admin-side .logout{color:var(--danger); margin-top:16px; border-top:1px solid var(--line); padding-top:16px;}
+  
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:32px; box-shadow: 0 8px 24px rgba(0,0,0,0.2);}
+  .panel h2{font-size:24px; margin-bottom:20px;}
+  
+  table{width:100%; border-collapse:collapse; font-size:14px;}
+  th{text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); font-family:'Outfit',sans-serif; font-weight:700; padding:12px; border-bottom:1px solid var(--line);}
+  td{padding:16px 12px; border-bottom:1px solid var(--line-soft); vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  .mini-input{width:90px; padding:10px; font-family:'Space Grotesk',monospace;}
+  .row-actions{display:flex; gap:8px;}
+  
+  .icon-btn{border:none; background:var(--panel-3); color:var(--ink); border-radius:10px; padding:10px 16px; font-size:13.5px; font-weight:600; transition:all 0.2s;}
+  .icon-btn.save{background:var(--leaf); color:#fff;}
+  .icon-btn.save:hover{background:var(--leaf-dark); transform:translateY(-1px);}
+  .icon-btn.del{background:rgba(224,108,83,0.15); color:var(--danger);}
+  .icon-btn.del:hover{background:var(--danger); color:#fff;}
+  
+  .status-pill{padding:6px 14px; border-radius:100px; font-size:12px; font-weight:700; font-family:'Outfit',sans-serif; text-transform:uppercase; letter-spacing:.5px;}
+  .status-attente{background:rgba(226,176,80,0.15); color:var(--amber);}
+  .status-preparation{background:rgba(156,196,196,0.15); color:#9CC4C4;}
+  .status-prete{background:rgba(130,163,94,0.15); color:var(--leaf);}
+  .status-livree{background:rgba(255,255,255,0.08); color:var(--ink);}
+  .status-annulee{background:rgba(224,108,83,0.15); color:var(--danger);}
+  
+  .login-wrap{max-width:400px; margin:80px auto; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-lg); padding:40px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);}
+  .login-wrap h2{margin-bottom:8px; font-size:28px;}
+  .login-wrap p.sub{color:var(--ink-soft); font-size:14.5px; margin-bottom:28px; line-height:1.5;}
+  
+  .add-form{display:grid; grid-template-columns:repeat(4,1fr) auto; gap:16px; align-items:end; margin-bottom:24px; padding:20px; background:rgba(0,0,0,0.2); border:1px solid var(--line); border-radius:16px;}
+  .add-form .field{margin-bottom:0;}
+  
+  .toast{
+    position:fixed; top:24px; left:50%; transform:translateX(-50%); background:var(--panel-2); color:var(--ink);
+    padding:14px 28px; border-radius:100px; font-size:14px; font-weight:600; z-index:100;
+    box-shadow:0 12px 30px rgba(0,0,0,0.6); animation:fadeup .3s cubic-bezier(0.4, 0, 0.2, 1); border:1px solid var(--line);
+  }
+  @keyframes fadeup{from{opacity:0; transform:translate(-50%,16px);} to{opacity:1; transform:translate(-50%,0);}}
+  
+  .err{color:var(--danger); font-size:14px; margin-top:10px; font-weight:500;}
+  .muted{color:var(--ink-soft); font-size:14px; line-height:1.5;}
+  
+  .accounts-list{margin-top:24px;}
+  .accounts-list .acc-row{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border:1px solid var(--line); border-radius:12px; margin-bottom:10px; background:var(--panel-2); flex-wrap:wrap; gap:10px;}
+  .role-badge{font-family:'Space Grotesk',monospace; font-size:11px; padding:4px 10px; border-radius:8px; background:var(--panel-3); color:var(--amber); border:1px solid var(--line);}
+  
+  input[type="checkbox"]{width:auto; accent-color:var(--amber); margin:0; transform: scale(1.2);}
+  .checkbox-row{display:flex; align-items:center; gap:10px; margin-top:-4px; margin-bottom:16px;}
+  .checkbox-row label{font-weight:600; color:var(--ink); font-size:14px; margin:0;}
+  .field-hint{font-size:12px; color:var(--ink-soft); margin-top:6px; display:block;}
+  
+  fieldset.section{border:1px solid var(--line); border-radius:12px; padding:20px; margin:20px 0; background:rgba(255,255,255,0.01);}
+  fieldset.section legend{font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--amber); font-weight:700; padding:0 10px; font-family:'Outfit',sans-serif;}
+  
+  .table-scroll{overflow-x:auto; margin:0 -4px; padding-bottom:12px;}
+  .table-scroll table{min-width:800px;}
+  
+  .hero{
+    position:relative; border-radius:var(--radius-lg); overflow:hidden; min-height:460px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    background-size:cover; background-position:center; padding:32px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.5); border:1px solid var(--line);
+  }
+  .hero::before{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(13,15,11,0.4) 0%, rgba(13,15,11,0.2) 40%, rgba(13,15,11,0.9) 100%); z-index:0;}
+  .hero-top, .hero-content{position:relative; z-index:1;}
+  .hero-top{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .hero-actions{display:flex; gap:12px; flex-wrap:wrap;}
+  .hero-btn{
+    border:1px solid rgba(237,232,216,0.2); background:rgba(27,30,22,0.4); color:var(--ink);
+    padding:12px 24px; border-radius:100px; font-size:14px; font-weight:600; 
+    backdrop-filter:blur(12px); transition:all 0.2s;
+  }
+  .hero-btn:hover{border-color:var(--amber); background:rgba(27,30,22,0.8);}
+  .hero-btn-primary{background:var(--amber); color:#1B1D16; border-color:var(--amber);}
+  .hero-btn-primary:hover{background:var(--amber-dark); border-color:var(--amber-dark); color:#fff;}
+  .hero-content{margin-top:auto; max-width:600px;}
+  .hero-title{font-size:48px; font-weight:800; color:var(--ink); text-shadow:0 4px 24px rgba(0,0,0,0.6); line-height:1.1;}
+  .hero-sub{font-size:17px; color:#E8E6D3; margin-top:16px; text-shadow:0 2px 12px rgba(0,0,0,0.6); line-height:1.5;}
+  
+  .contact-panel{
+    width:min(500px,94vw); background:var(--bg-mid); border:1px solid var(--line); border-radius:var(--radius-lg);
+    padding:40px; margin:auto; box-shadow:0 24px 60px rgba(0,0,0,0.6);
+  }
+  .contact-card{display:flex; align-items:center; gap:16px; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:16px; transition: transform 0.2s;}
+  .contact-card:hover { transform: translateY(-2px); border-color: var(--amber); }
+  .contact-avatar{
+    width:64px; height:64px; border-radius:50%; background:var(--panel-3); color:var(--amber);
+    display:flex; align-items:center; justify-content:center; font-family:'Outfit',sans-serif;
+    font-weight:700; font-size:24px; flex-shrink:0; border:2px solid var(--line); object-fit:cover;
+  }
+  .contact-name{font-weight:700; font-family:'Outfit', sans-serif; font-size:18px;}
+  .contact-role{font-size:13px; color:var(--ink-soft); margin:4px 0 6px;}
+  .contact-phone{font-family:'Space Grotesk',monospace; font-weight:600; font-size:15px; color:var(--amber); text-decoration:none;}
+  .contact-phone:hover{text-decoration:underline;}
+
+  /* --- STYLE INDICATEUR VERT --- */
+  .production-indicator {
+    font-family: 'Space Grotesk', monospace; 
+    font-size: 56px; 
+    font-weight: 700; 
+    color: #34D399; 
+    line-height: 1; 
+    margin: 16px 0 24px;
+    letter-spacing: -1px;
+  }
+
+  /* --- STYLE BOUTONS ESPACE EMPLOYÉ --- */
+  .emp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;}
+  .emp-btn { 
+    border: none; border-radius: 12px; padding: 20px 12px; font-weight: 700; 
+    font-size: 15px; font-family: 'Outfit', sans-serif; cursor: pointer; 
+    transition: transform 0.2s, filter 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .emp-btn:hover { transform: translateY(-3px); filter: brightness(1.05); }
+  .emp-green { background: #82A35E; color: #12140F; }
+  .emp-amber { background: #E2B050; color: #12140F; }
+  .emp-close { background: #1B1E16; color: #FFF; border: 1px solid #323A29; width: 100%; padding: 16px; }
+  
+  /* --- STYLE CARTE COMMANDE ADMIN --- */
+  .admin-order-card {
+    background: rgba(255,255,255,0.02); border: 1px solid var(--line); border-radius: 16px;
+    padding: 24px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 16px;
+    transition: box-shadow 0.2s; position: relative; overflow: hidden;
+  }
+  .admin-order-card:hover { border-color: var(--line-soft); background: rgba(255,255,255,0.03); }
+  .aoc-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; }
+  .aoc-client { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 20px; color: var(--ink); }
+  .aoc-items { background: rgba(0,0,0,0.2); padding: 16px; border-radius: 12px; border: 1px solid var(--line-soft); font-size: 14.5px; line-height: 1.6; }
+
+  /* --- EDITION COMPTE EMPLOYES --- */
+  .edit-acc-form { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border: 1px dashed var(--line); display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px;}
+
+  @media (max-width:768px){
+    .hero{min-height:380px; padding:24px;}
+    .hero-title{font-size:36px;}
+    .admin-shell{grid-template-columns:1fr;}
+    .admin-side{display:flex; overflow-x:auto; gap:8px; padding:16px;}
+    .admin-side button { margin-bottom: 0; white-space: nowrap; }
+    .admin-side .who, .admin-side .logout{display:none;}
+    .add-form{grid-template-columns:1fr 1fr;}
+    .emp-grid{grid-template-columns: 1fr;}
+  }
+</style>
+</head>
+<body>
+<div id="bgArt" aria-hidden="true" style="background-image: url('https://i.goopics.net/qlgp7c.png');"></div>
+<div id="root"></div>
+
+<script>
+/* ---------------------------------------------------------
+   FERME BIOGOOD — App de commande + panneau admin
+--------------------------------------------------------- */
+
+(function(){
+  if(window.storage && typeof window.storage.get === 'function') return;
+  const LS_PREFIX = 'biogood_store_v1_';
+  window.storage = {
+    async get(key, shared){
+      const raw = localStorage.getItem(LS_PREFIX + key);
+      if(raw === null) throw new Error('Clé introuvable : ' + key);
+      return {key, value: raw, shared: !!shared};
+    },
+    async set(key, value, shared){
+      localStorage.setItem(LS_PREFIX + key, value);
+      return {key, value, shared: !!shared};
+    },
+    async delete(key, shared){
+      localStorage.removeItem(LS_PREFIX + key);
+      return {key, deleted:true, shared: !!shared};
+    },
+    async list(prefix, shared){
+      const p = LS_PREFIX + (prefix || '');
+      const keys = Object.keys(localStorage).filter(k=>k.startsWith(p)).map(k=>k.slice(LS_PREFIX.length));
+      return {keys, prefix, shared: !!shared};
+    }
+  };
+})();
+
+// Stocks initiaux mis à jour selon la demande
+const DEFAULT_CATALOG = [
+  {id:'f1', name:'Pomme', price:5, category:'fruits', icon:'🍎', image:'https://i.goopics.net/66aijh.png', qty:8174},
+  {id:'f2', name:'Orange', price:5, category:'fruits', icon:'🍊', image:'https://i.goopics.net/4cpvf7.png', qty:5633},
+  {id:'f3', name:'Pêche', price:5, category:'fruits', icon:'🍑', image:'https://i.goopics.net/zbftdq.png', qty:498},
+  {id:'f4', name:'Citron Vert', price:5, category:'fruits', icon:'🍏', image:'https://i.goopics.net/c6p5oo.png', qty:2136},
+  {id:'f5', name:'Myrtille', price:5, category:'fruits', icon:'🫐', image:'https://i.goopics.net/g8wyby.png', qty:17164},
+  {id:'f6', name:'Kiwi', price:5, category:'fruits', icon:'🥝', image:'https://i.goopics.net/dexsom.png', qty:1244},
+  {id:'f7', name:'Citron Jaune', price:5, category:'fruits', icon:'🍋', image:'https://i.goopics.net/1q59z6.png', qty:2016},
+  {id:'f8', name:'Mangue', price:5, category:'fruits', icon:'🥭', image:'https://i.goopics.net/pxw945.png', qty:2547},
+  {id:'f9', name:'Avocat', price:5, category:'fruits', icon:'🥑', image:'https://i.goopics.net/owwr64.png', qty:0},
+  {id:'l1', name:'Olive', price:5, category:'legumes', icon:'🫒', image:'https://i.goopics.net/63t4uw.png', qty:6186},
+  {id:'l2', name:'Citrouille', price:5, category:'legumes', icon:'🎃', image:'https://i.goopics.net/81h0c4.png', qty:35},
+  {id:'l3', name:'Piment', price:7, category:'legumes', icon:'🌶️', image:'https://i.goopics.net/2rnm2c.png', qty:3061},
+  {id:'l4', name:'Grain de café', price:5, category:'legumes', icon:'☕', image:'https://i.goopics.net/3o4urx.png', qty:233},
+  {id:'l5', name:'Oeuf', price:5, category:'legumes', icon:'🥚', image:'https://i.goopics.net/uycb7h.png', qty:42},
+  {id:'l6', name:'Caramel', price:1, category:'legumes', icon:'🍬', image:'https://i.goopics.net/2w0ro3.png', qty:463},
+  {id:'l7', name:'Sucre', price:5, category:'legumes', icon:'🧂', image:'https://i.goopics.net/j74f9x.png', qty:6121},
+  {id:'l8', name:'Tournesol', price:5, category:'legumes', icon:'🌻', image:'https://i.goopics.net/y1xa3b.png', qty:1},
+  {id:'l9', name:'Canne à sucre', price:5, category:'legumes', icon:'🎋', image:'https://i.goopics.net/cisp2h.png', qty:562},
+  {id:'l10', name:'Guacamole', price:7, category:'legumes', icon:'🥣', image:'https://i.goopics.net/7dtqzf.png', qty:0},
+  {id:'l11', name:'Poivre', price:7, category:'legumes', icon:'⚫', image:'https://i.goopics.net/sqczal.png', qty:2611},
+  {id:'l12', name:'Huile de tournesol', price:8, category:'legumes', icon:'🛢️', image:'https://i.goopics.net/sqczal.png', qty:65},
+  {id:'l13', name:"Huile d'olive", price:8, category:'legumes', icon:'🫙', image:'https://i.goopics.net/f3pa14.png', qty:1413},
+  {id:'l14', name:'Résine', price:7, category:'legumes', icon:'🟤', image:'https://i.goopics.net/mxh5rb.png', qty:0},
+  {id:'l16', name:'Pot de résine a bois', price:9, category:'legumes', icon:'🏺', image:'', qty:628},
+];
+
+const CATS = {fruits:'Fruits', legumes:'Légumes & Divers'};
+const HERO_BG = 'https://i.goopics.net/qlgp7c.png';
+
+let state = {
+  loading:true,
+  view:'shop',
+  publicView:'accueil',
+  contactOpen:false,
+  applyOpen:false,
+  employeeOpen:false,
+  patronTab:'exportation',
+  employeeTab:'exportation',
+  cartonsPending:0,
+  stockModalOpen:false,
+  partnerModalOpen:false,
+  cartonsResetMeta:{lastResetAt:null},
+  partnerships:[],
+  production:{maxCartons:null, updatedAt:null},
+  harvests:[],
+  exportHistory:[],
+  catalog:[],
+  orders:[],
+  accounts:[],
+  applications:[],
+  customPricing:{},
+  selectedPricingClient:null,
+  activeCat:'all',
+  cart:{},
+  cartOpen:false,
+  auth:null,
+  adminTab:'produits',
+  loginErr:'',
+  applyErr:'',
+  toast:null,
+  editingAccount: null,
+};
+
+function setState(patch){ state = {...state, ...patch}; render(); }
+
+function toast(msg){
+  setState({toast:msg});
+  setTimeout(()=>{ if(state.toast===msg) setState({toast:null}); }, 2200);
+}
+
+/* ---------------- storage helpers ---------------- */
+async function loadAll(){
+  try{
+    const c = await window.storage.get('catalog', true);
+    state.catalog = c ? JSON.parse(c.value) : DEFAULT_CATALOG;
+  }catch(e){ state.catalog = DEFAULT_CATALOG; }
+  
+  if(!state.catalog.length) state.catalog = DEFAULT_CATALOG;
+  state.catalog = state.catalog.filter(p=>p.id!=='l15' && p.name!=='Carotte');
+  
+  // On s'assure d'initialiser les bonnes quantités pour le premier chargement ou si on ajoute de nouveaux objets
+  DEFAULT_CATALOG.forEach(dp=>{
+    const existing = state.catalog.find(p=>p.id===dp.id);
+    if(!existing) {
+      state.catalog.push({...dp});
+    } else if (existing.qty === undefined || existing.qty === null) {
+      existing.qty = dp.qty; // Initialisation du stock demandé par le patron
+    }
+  });
+  await saveCatalog();
+
+  try{
+    const o = await window.storage.get('orders', true);
+    state.orders = o ? JSON.parse(o.value) : [];
+  }catch(e){ state.orders = []; }
+  
+  try{
+    const a = await window.storage.get('accounts', true);
+    state.accounts = a ? JSON.parse(a.value) : [];
+  }catch(e){ state.accounts = []; }
+
+  try{
+    const cp = await window.storage.get('customPricing', true);
+    state.customPricing = cp ? JSON.parse(cp.value) : {};
+  }catch(e){ state.customPricing = {}; }
+
+  try{
+    const ap = await window.storage.get('applications', true);
+    state.applications = ap ? JSON.parse(ap.value) : [];
+  }catch(e){ state.applications = []; }
+
+  try{
+    const pr = await window.storage.get('production', true);
+    state.production = pr ? JSON.parse(pr.value) : {maxCartons:null, updatedAt:null};
+  }catch(e){ state.production = {maxCartons:null, updatedAt:null}; }
+
+  try{
+    const hv = await window.storage.get('harvests', true);
+    state.harvests = hv ? JSON.parse(hv.value) : [];
+  }catch(e){ state.harvests = []; }
+
+  try{
+    const eh = await window.storage.get('exportHistory', true);
+    state.exportHistory = eh ? JSON.parse(eh.value) : [];
+  }catch(e){ state.exportHistory = []; }
+
+  try{
+    const crm = await window.storage.get('cartonsResetMeta', true);
+    state.cartonsResetMeta = crm ? JSON.parse(crm.value) : {lastResetAt:null};
+  }catch(e){ state.cartonsResetMeta = {lastResetAt:null}; }
+
+  try{
+    const pt = await window.storage.get('partnerships', true);
+    state.partnerships = pt ? JSON.parse(pt.value) : [];
+  }catch(e){ state.partnerships = []; }
+
+  await checkWeeklyCartonReset();
+
+  if(!state.accounts.length){
+    state.accounts = [
+      {username:'admin', password:'admin123', role:'admin'},
+      {username:'client', password:'client123', role:'client'}
+    ];
+    await saveAccounts();
+  }
+  if(!state.accounts.some(a=>a.username==='sione')){
+    state.accounts = [...state.accounts, {username:'sione', password:'sione', role:'patron'}];
+    await saveAccounts();
+  }
+  if(!state.accounts.some(a=>a.username==='teeway')){
+    state.accounts = [...state.accounts, {username:'teeway', password:'BG1234', role:'patron'}];
+    await saveAccounts();
+  }
+
+  // Auto-login ou pré-remplissage via localStorage de la tablette
+  const savedLogin = localStorage.getItem('biogood_saved_login');
+  if(savedLogin){
+    const {u, p} = JSON.parse(savedLogin);
+    const acc = state.accounts.find(x=>x.username===u && x.password===p);
+    if(acc) {
+       state.auth = acc;
+       state.view = (acc.role === 'admin' || acc.role === 'vendeur') ? 'admin' : (acc.role === 'patron') ? 'patron' : (['cultivateur','commercial','rh'].includes(acc.role)) ? 'employeeHome' : 'shop';
+    }
+  }
+
+  state.loading = false;
+  render();
+}
+async function saveCatalog(){ try{ await window.storage.set('catalog', JSON.stringify(state.catalog), true);}catch(e){ toast('Erreur'); } }
+async function saveOrders(){ try{ await window.storage.set('orders', JSON.stringify(state.orders), true);}catch(e){ toast('Erreur'); } }
+async function saveAccounts(){ try{ await window.storage.set('accounts', JSON.stringify(state.accounts), true);}catch(e){ toast('Erreur'); } }
+async function saveCustomPricing(){ try{ await window.storage.set('customPricing', JSON.stringify(state.customPricing), true);}catch(e){ toast('Erreur'); } }
+async function saveApplications(){ try{ await window.storage.set('applications', JSON.stringify(state.applications), true);}catch(e){ toast('Erreur'); } }
+async function saveProduction(){ try{ await window.storage.set('production', JSON.stringify(state.production), true);}catch(e){ toast('Erreur'); } }
+async function saveCartonsResetMeta(){ try{ await window.storage.set('cartonsResetMeta', JSON.stringify(state.cartonsResetMeta), true);}catch(e){} }
+
+async function onManualRefresh(){
+  toast('Sauvegarde en cours...');
+  try{
+    await Promise.all([
+      saveCatalog(),
+      saveOrders(),
+      saveAccounts(),
+      saveCustomPricing(),
+      saveApplications(),
+      saveProduction(),
+      saveHarvests(),
+      saveExportHistory(),
+      saveCartonsResetMeta(),
+      savePartnerships()
+    ]);
+  }catch(e){ /* on rafraîchit quand même même si une sauvegarde a échoué */ }
+  location.reload();
+}
+async function savePartnerships(){ try{ await window.storage.set('partnerships', JSON.stringify(state.partnerships), true);}catch(e){ toast('Erreur'); } }
+
+/* Calcule le dernier lundi 00h01 précédant (ou égal à) la date donnée */
+function getLastMondayReset(now){
+  const d = new Date(now);
+  d.setHours(0,1,0,0);
+  const day = d.getDay(); // 0=dimanche ... 6=samedi
+  const diffToMonday = (day + 6) % 7;
+  d.setDate(d.getDate() - diffToMonday);
+  if(d.getTime() > now.getTime()){
+    d.setDate(d.getDate() - 7);
+  }
+  return d;
+}
+
+/* Remet les cartons à 0 si on a franchi un nouveau lundi 00h01 depuis le dernier reset */
+async function checkWeeklyCartonReset(){
+  const now = new Date();
+  const lastMonday = getLastMondayReset(now);
+  const lastResetAt = (state.cartonsResetMeta && state.cartonsResetMeta.lastResetAt) ? new Date(state.cartonsResetMeta.lastResetAt) : null;
+  if(!lastResetAt || lastResetAt.getTime() < lastMonday.getTime()){
+    state.production = {maxCartons:0, updatedAt: now.toISOString()};
+    await saveProduction();
+    state.cartonsResetMeta = {lastResetAt: lastMonday.toISOString()};
+    await saveCartonsResetMeta();
+    return true;
+  }
+  return false;
+}
+async function saveHarvests(){ try{ await window.storage.set('harvests', JSON.stringify(state.harvests), true);}catch(e){ toast('Erreur'); } }
+async function saveExportHistory(){ try{ await window.storage.set('exportHistory', JSON.stringify(state.exportHistory), true);}catch(e){ toast('Erreur'); } }
+
+/* ---------------- pricing helpers ---------------- */
+function effectivePrice(p){
+  if(state.auth){
+    const clientMap = state.customPricing[state.auth.username];
+    if(clientMap && clientMap[p.id]!=null) return clientMap[p.id];
+  }
+  return p.price;
+}
+
+/* ---------------- cart helpers ---------------- */
+function cartCount(){ return Object.values(state.cart).reduce((a,b)=>a+b,0); }
+function cartTotal(){
+  return Object.entries(state.cart).reduce((sum,[id,qty])=>{
+    const p = state.catalog.find(x=>x.id===id);
+    return sum + (p ? effectivePrice(p)*qty : 0);
+  },0);
+}
+function changeQty(id, delta){
+  const cur = state.cart[id]||0;
+  const next = Math.max(0, cur+delta);
+  const cart = {...state.cart};
+  if(next===0) delete cart[id]; else cart[id]=next;
+  setState({cart});
+}
+function setQty(id, value){
+  const v = Math.max(0, Math.floor(Number(value))||0);
+  const cart = {...state.cart};
+  if(v===0) delete cart[id]; else cart[id]=v;
+  setState({cart});
+}
+
+/* ---------------- render ---------------- */
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function orderStatusLabel(status){
+  return status==='attente' ? 'En attente'
+    : status==='preparation' ? 'En préparation'
+    : status==='prete' ? 'Prête'
+    : status==='annulee' ? 'Annulée'
+    : 'Livrée';
+}
+function iconHtml(p, size){
+  if(p.image) {
+    if(size === '100%') return `<img src="${esc(p.image)}" alt="${esc(p.name)}">`;
+    return `<img src="${esc(p.image)}" alt="${esc(p.name)}" style="width:${size}px;height:${size}px;object-fit:cover;border-radius:12px;display:block;">`;
+  }
+  return `<div style="font-size:${size==='100%'?'48px':size+'px'}">${p.icon || '🌱'}</div>`;
+}
+
+function render(){
+  const root = document.getElementById('root');
+  if(state.loading){ root.innerHTML = '<div style="padding:80px;text-align:center;color:#A8A896;font-size:18px;">Chargement de la boutique…</div>'; return; }
+
+  if(!state.auth){
+    root.innerHTML = `
+      ${state.publicView==='login' ? loginPageWrap() : accueilView()}
+      ${state.contactOpen ? contactModal() : ''}
+      ${state.applyOpen ? applyModal() : ''}
+      ${state.employeeOpen ? employeeModal() : ''}
+      ${state.toast ? `<div class="toast">${esc(state.toast)}</div>` : ''}
+      <button class="refresh-fab" id="manualRefreshBtn" title="Rafraîchir la page">↻</button>
+    `;
+    attachEvents();
+    return;
+  }
+
+  root.innerHTML = `
+    ${header()}
+    ${state.view==='shop' ? shopView() : state.view==='mesCommandes' ? mesCommandesView() : state.view==='patron' ? patronView() : state.view==='employeeHome' ? employeeHomeView() : adminView()}
+    ${state.cartOpen ? cartDrawer() : ''}
+    ${state.toast ? `<div class="toast">${esc(state.toast)}</div>` : ''}
+    ${state.view==='shop' ? `<button class="cart-fab" id="openCart">🧺 Panier ${cartCount()>0?`<span class="badge">${cartCount()}</span>`:''}</button>` : ''}
+    <button class="refresh-fab ${state.view==='shop'?'with-cart':''}" id="manualRefreshBtn" title="Rafraîchir la page">↻</button>
+  `;
+  attachEvents();
+}
+
+function header(){
+  const role = state.auth ? state.auth.role : null;
+  const canAdmin = role==='admin' || role==='vendeur';
+  const isCustomerLike = role==='admin' || role==='vendeur' || role==='client';
+  const isPatron = role==='patron';
+  const isStaff = role==='cultivateur' || role==='commercial' || role==='rh';
+  return `
+  <div class="topbar">
+    <div class="brand">
+      <img src="https://i.goopics.net/fmmtwn.png" class="brand-logo" alt="Logo BioGood">
+      <div class="brand-text">
+        <h1>Ferme BioGood</h1>
+        <span>L'art du bio</span>
+      </div>
+    </div>
+    ${state.auth ? `
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="nav">
+        ${isCustomerLike ? `
+          <button data-nav="shop" class="${state.view==='shop'?'active':''}">Boutique</button>
+          <button data-nav="mesCommandes" class="${state.view==='mesCommandes'?'active':''}">Mes commandes</button>
+          ${canAdmin ? `<button data-nav="admin" class="${state.view==='admin'?'active':''}">Espace admin</button>` : ''}
+        ` : ''}
+        ${isPatron ? `<button data-nav="patron" class="${state.view==='patron'?'active':''}">Espace patron</button>` : ''}
+        ${isStaff ? `<button data-nav="employeeHome" class="${state.view==='employeeHome'?'active':''}">Mon espace</button>` : ''}
+      </div>
+      <button id="headerLogout" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1); color:var(--ink); padding:10px 20px; border-radius:100px; font-size:14px; font-weight:600; transition:all 0.2s;">↩ ${esc(state.auth.username)}</button>
+    </div>` : ''}
+  </div>`;
+}
+
+function shopView(){
+  const items = state.catalog.filter(p => state.activeCat==='all' || p.category===state.activeCat);
+  return `
+  <div class="cats">
+    <button data-cat="all" class="${state.activeCat==='all'?'active':''}">Tous</button>
+    ${Object.entries(CATS).map(([k,v])=>`<button data-cat="${k}" class="${state.activeCat===k?'active':''}">${v}</button>`).join('')}
+  </div>
+  <div class="grid">
+    ${items.length ? items.map(p=>{
+      const qty = state.cart[p.id]||0;
+      const eff = effectivePrice(p);
+      const custom = eff !== p.price;
+      return `
+      <div class="product-card">
+        <div class="product-card-img">${iconHtml(p,'100%')}</div>
+        <div class="product-card-content">
+          <div class="name">${esc(p.name)}</div>
+          <div class="price-tag">${custom?`<span style="text-decoration:line-through;color:var(--ink-soft);font-weight:500;margin-right:8px;">${p.price}$</span>`:''}${eff}$ / unité</div>
+          ${custom ? `<span class="field-hint" style="color:var(--amber); margin-top:-8px; font-weight:600;">Tarif personnalisé appliqué</span>` : ''}
+          <div class="qty-row">
+            <div class="stepper">
+              <button data-dec="${p.id}">−</button>
+              <input type="number" class="qty-input" min="0" step="1" data-qtyset="${p.id}" value="${qty}">
+              <button data-inc="${p.id}">+</button>
+            </div>
+          </div>
+          <button class="add-btn" data-add="${p.id}">Ajouter au panier</button>
+        </div>
+      </div>`;
+    }).join('') : '<div class="empty-note">Aucun article dans cette catégorie.</div>'}
+  </div>`;
+}
+
+function cartDrawer(){
+  const entries = Object.entries(state.cart);
+  const total = cartTotal();
+  return `
+  <div class="drawer-overlay" id="drawerOverlay">
+    <div class="drawer" id="drawerPanel">
+      <h2>Votre panier</h2>
+      ${entries.length===0 ? '<p class="muted">Votre panier est vide pour le moment.</p>' : entries.map(([id,qty])=>{
+        const p = state.catalog.find(x=>x.id===id);
+        if(!p) return '';
+        const eff = effectivePrice(p);
+        return `
+        <div class="cart-item">
+          <div class="ci-icon">${iconHtml(p,40)}</div>
+          <div class="ci-info">
+            <div class="n">${esc(p.name)}</div>
+            <div class="p">${qty} × ${eff}$ = ${(qty*eff).toFixed(2)}$</div>
+          </div>
+          <button class="rm" data-rm="${id}">×</button>
+        </div>`;
+      }).join('')}
+      ${entries.length>0 ? `
+      <div class="cart-total"><span>Prix final</span><span class="amt">${total.toFixed(2)}$</span></div>
+
+      <fieldset class="section">
+        <legend>Coordonnées</legend>
+        <div class="field">
+          <label>Nom du client</label>
+          <input id="clientName" placeholder="Ex : Marie Dupont" value="${esc(state.auth && state.auth.role==='client' ? state.auth.username : '')}" />
+        </div>
+        <div class="field">
+          <label>Personne(s) à contacter</label>
+          <input id="contactPerson" placeholder="Ex : Marie Dupont, Paul (livraison)" />
+        </div>
+        <div class="field">
+          <label>Numéro de téléphone</label>
+          <input id="phoneNumber" type="tel" placeholder="Ex : 555-9871" />
+        </div>
+      </fieldset>
+
+      <fieldset class="section">
+        <legend>Livraison souhaitée</legend>
+        <div class="checkbox-row">
+          <input type="checkbox" id="asapCheck" />
+          <label for="asapCheck">Dès que possible</label>
+        </div>
+        <div class="field" id="dateField">
+          <label>Ou une date précise</label>
+          <input type="date" id="desiredDate" />
+        </div>
+      </fieldset>
+
+      <fieldset class="section">
+        <legend>Paiement</legend>
+        <div class="field" style="margin-bottom:0;">
+          <label>IBAN</label>
+          <input id="ibanNumber" placeholder="EX : BIOGOOD" />
+          <span class="field-hint">Facultatif — utile pour un règlement par virement</span>
+        </div>
+      </fieldset>
+
+      <div id="orderErr" class="err" style="display:none;"></div>
+      <button class="primary-btn" id="submitOrder" style="margin-top:16px;">Valider la commande</button>
+      ` : ''}
+      <button class="icon-btn" id="closeDrawer" style="margin-top:16px; width:100%; padding:16px; font-size:15px; background:rgba(255,255,255,0.05); border:1px solid var(--line);">Fermer</button>
+    </div>
+  </div>`;
+}
+
+function mesCommandesView(){
+  const myOrders = state.orders
+    .filter(o=>o.username===state.auth.username)
+    .sort((a,b)=> new Date(b.date)-new Date(a.date));
+  return `
+  <h2 style="margin-bottom:24px;">Mes commandes</h2>
+  ${myOrders.length===0 ? '<p class="muted">Vous n\u2019avez pas encore passé de commande.</p>' : myOrders.map(o=>`
+    <div class="card" style="margin-bottom:16px; align-items:stretch;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+        <div>
+          <div style="font-weight:700; font-size:16px; font-family:'Outfit',sans-serif;">Commande du ${new Date(o.date).toLocaleString('fr-FR')}</div>
+          <div class="muted" style="margin-top:4px;">${o.asap ? 'Livraison : dès que possible' : (o.desiredDate ? 'Livraison souhaitée : '+new Date(o.desiredDate).toLocaleDateString('fr-FR') : '—')}</div>
+        </div>
+        <span class="status-pill status-${o.status}">${orderStatusLabel(o.status)}</span>
+      </div>
+      <div class="order-items" style="max-width:none; margin:16px 0; padding:12px; background:rgba(255,255,255,0.02); border-radius:12px; border:1px solid var(--line-soft);">${o.items.map(i=>`<b>${i.qty}×</b> ${esc(i.name)}`).join(' &nbsp;•&nbsp; ')}</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <span class="price-tag" style="font-size:18px;">${o.total.toFixed(2)}$</span>
+        <button class="icon-btn save" data-reorder="${o.id}">🔁 Repasser cette commande</button>
+      </div>
+    </div>
+  `).join('')}
+  `;
+}
+
+function patronView(){
+  const content = state.patronTab==='exportation' ? cartonsPanel()
+    : state.patronTab==='inventaire' ? inventairePanel()
+    : `<div class="panel">${
+        state.patronTab==='commandes' ? commandesPanel()
+        : state.patronTab==='historique' ? historiquePanel()
+        : state.patronTab==='partenariat' ? partnershipsPanel()
+        : state.patronTab==='classement' ? classementPanel()
+        : employeeAccountsPanel()
+      }</div>`;
+  return `
+  <div class="admin-shell">
+    <div class="admin-side">
+      <div class="who">Connecté : ${esc(state.auth.username)} <br><span style="color:var(--amber);">Espace Patron</span></div>
+      <button data-ptab="exportation" class="${state.patronTab==='exportation'?'active':''}">📦 Exportation</button>
+      <button data-ptab="inventaire" class="${state.patronTab==='inventaire'?'active':''}">🌱 Inventaire</button>
+      <button data-ptab="commandes" class="${state.patronTab==='commandes'?'active':''}">🧾 Commandes</button>
+      <button data-ptab="partenariat" class="${state.patronTab==='partenariat'?'active':''}">🤝 Partenariat</button>
+      <button data-ptab="historique" class="${state.patronTab==='historique'?'active':''}">🕘 Historique</button>
+      <button data-ptab="classement" class="${state.patronTab==='classement'?'active':''}">🏆 Classement</button>
+      <button data-ptab="comptesEmp" class="${state.patronTab==='comptesEmp'?'active':''}">👤 Comptes & Rôles</button>
+      <button class="logout" id="logoutBtn">↩ Déconnexion</button>
+    </div>
+    ${content}
+  </div>`;
+}
+
+function cartonsPanel(){
+  const current = (state.production && state.production.maxCartons) ? state.production.maxCartons : 0;
+  const pending = state.cartonsPending || 0;
+  const future = Math.min(200, current + pending);
+  const pct = Math.round((future/200)*100);
+  const statusLabel = pct>=100 ? 'EXEMPLAIRE' : pct>=50 ? 'CONFORME' : 'À SURVEILLER';
+  const statusColor = pct>=100 ? 'var(--leaf)' : pct>=50 ? 'var(--amber)' : 'var(--danger)';
+  const canConfirm = pending>0;
+  const roleLabel = {cultivateur:'Cultivateur', commercial:'Commercial', rh:'RH', patron:'Patron'}[state.auth.role] || state.auth.role;
+
+  return `
+  <div class="cartons-wrap">
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:20px;">
+      <div class="panel" style="padding:24px;">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); font-weight:700; margin-bottom:10px;">Quota hebdo</div>
+        <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:34px; color:var(--ink);">${pct}%</div>
+        <div style="color:var(--ink-soft); font-size:13px; margin-top:6px; font-family:'Space Grotesk',monospace;">${current}/200 Cartons</div>
+      </div>
+      <div class="panel" style="padding:24px;">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); font-weight:700; margin-bottom:10px;">Exploitation</div>
+        <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:20px; color:var(--ink);">🚜 ${esc(state.auth.username)}</div>
+        <div style="color:var(--ink-soft); font-size:13px; margin-top:6px;">${esc(roleLabel)}</div>
+      </div>
+      <div class="panel" style="padding:24px;">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); font-weight:700; margin-bottom:10px;">Statut dossier</div>
+        <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:22px; color:${statusColor};">🪪 ${statusLabel}</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:20px;">
+      <div class="panel" style="padding:36px; text-align:center;">
+        <h2 style="margin-bottom:8px;">Gestion des stocks</h2>
+        <p class="muted" style="margin-bottom:8px;">Indiquez le nombre de cartons prêts à l'expédition.</p>
+        <div class="production-indicator" style="font-size:64px;">${pending}</div>
+        <div class="muted" style="margin-top:-16px; margin-bottom:28px; letter-spacing:1px; text-transform:uppercase; font-size:12px;">Unités</div>
+        <div style="display:flex; gap:12px; justify-content:center; margin-bottom:20px;">
+          <button class="icon-btn" data-cartinc="10">+10</button>
+          <button class="icon-btn" data-cartinc="50">+50</button>
+          <button class="icon-btn del" id="resetCartBtn">Reset</button>
+        </div>
+        <div style="display:flex; gap:10px; justify-content:center; max-width:300px; margin:0 auto;">
+          <input id="customCartonInput" type="number" min="1" max="200" placeholder="Nombre de cartons" style="text-align:center;">
+          <button class="icon-btn save" id="addCustomCartonBtn" style="white-space:nowrap;">Ajouter</button>
+        </div>
+      </div>
+      <div class="panel" style="padding:32px;">
+        <h2 style="margin-bottom:20px;">Validation</h2>
+        <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line);">
+          <span class="muted">Actuellement stocké</span><b>${current}</b>
+        </div>
+        <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line);">
+          <span style="color:var(--leaf); font-weight:600;">+ Ajout en cours</span><b style="color:var(--leaf);">+${pending}</b>
+        </div>
+        <div style="display:flex; justify-content:space-between; padding:16px 0 20px;">
+          <span style="font-weight:700; color:var(--ink);">Futur total</span><b style="font-size:20px;">${future}</b>
+        </div>
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); font-weight:700; margin-bottom:6px; display:flex; justify-content:space-between;">
+          <span>Progression quota</span><span>${pct}%</span>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); border-radius:100px; height:10px; overflow:hidden; margin-bottom:24px;">
+          <div style="width:${pct}%; height:100%; background:var(--leaf); transition:width .3s;"></div>
+        </div>
+        <button class="primary-btn" id="confirmExportBtn" ${canConfirm?'':'disabled'}>Confirmer l'export</button>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function historiquePanel(){
+  const history = [...state.exportHistory].sort((a,b)=> new Date(b.date)-new Date(a.date));
+  return `
+  <h2>Historique des exportations</h2>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Date</th><th>Déclaré par</th><th>Rôle</th><th>Cartons ajoutés</th><th>Total après</th></tr></thead>
+    <tbody>
+      ${history.length===0 ? `<tr><td colspan="5" class="muted">Aucune exportation enregistrée.</td></tr>` : history.map(h=>`
+      <tr>
+        <td style="font-family:'Space Grotesk',monospace;">${new Date(h.date).toLocaleString('fr-FR')}</td>
+        <td style="font-weight:600;">${esc(h.username)}</td>
+        <td><span class="role-badge">${esc(h.role)}</span></td>
+        <td style="color:var(--leaf); font-weight:700;">+${h.amount}</td>
+        <td style="font-family:'Space Grotesk',monospace; font-weight:700;">${h.totalAfter}/200</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+  </div>`;
+}
+
+function classementPanel(){
+  const totals = {};
+  state.exportHistory.forEach(h => {
+    if(!totals[h.username]) totals[h.username] = 0;
+    totals[h.username] += h.amount;
+  });
+  
+  const sorted = Object.entries(totals).sort((a,b)=>b[1]-a[1]);
+  
+  return `
+  <h2>🏆 Classement des Cultivateurs</h2>
+  <p class="muted">Classement basé sur le total de cartons déclarés par les employés.</p>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Position</th><th>Employé</th><th>Total Cartons Déclarés</th></tr></thead>
+    <tbody>
+      ${sorted.length===0 ? `<tr><td colspan="3" class="muted">Aucune donnée disponible.</td></tr>` : sorted.map((entry, index)=>`
+      <tr>
+        <td><span style="font-size:18px; font-weight:bold; color:${index===0?'#FFD700':index===1?'#C0C0C0':index===2?'#CD7F32':'var(--ink-soft)'};">#${index+1}</span></td>
+        <td style="font-weight:600; font-size:16px;">${esc(entry[0])}</td>
+        <td style="font-family:'Space Grotesk',monospace; font-weight:700; color:var(--leaf); font-size:16px;">${entry[1]}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+  </div>`;
+}
+
+function monDossierPanel(){
+  const roleLabel = {cultivateur:'Cultivateur', commercial:'Commercial', rh:'RH', patron:'Patron'}[state.auth.role] || state.auth.role;
+  const current = (state.production && state.production.maxCartons) ? state.production.maxCartons : 0;
+  const pct = Math.round((current/200)*100);
+  const statusLabel = pct>=100 ? 'EXEMPLAIRE' : pct>=50 ? 'CONFORME' : 'À SURVEILLER';
+  const statusColor = pct>=100 ? 'var(--leaf)' : pct>=50 ? 'var(--amber)' : 'var(--danger)';
+  return `
+  <h2>Mon dossier</h2>
+  <div style="border:1px solid var(--line); border-radius:16px; padding:24px; margin-top:16px; background:rgba(255,255,255,0.02);">
+    <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line-soft);"><span class="muted">Identifiant</span><b>${esc(state.auth.username)}</b></div>
+    <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line-soft);"><span class="muted">Poste</span><b>${esc(roleLabel)}</b></div>
+    <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line-soft);"><span class="muted">Cartons actuellement stockés</span><b>${current}/200</b></div>
+    <div style="display:flex; justify-content:space-between; padding:10px 0;"><span class="muted">Statut du dossier</span><b style="color:${statusColor};">${statusLabel}</b></div>
+  </div>
+  `;
+}
+
+function inventairePanel(){
+  const current = (state.production && state.production.maxCartons) ? state.production.maxCartons : 0;
+  const pct = Math.round((current/200)*100);
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR');
+  
+  const isPatron = state.auth.role === 'patron';
+
+  return `
+  <div class="inventaire-wrap">
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:20px;">
+      <div class="panel" style="padding:24px;">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); font-weight:700; margin-bottom:10px;">Quota hebdomadaire</div>
+        <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:30px; color:var(--ink);">${current} / 200</div>
+        <div style="background:rgba(255,255,255,0.05); border-radius:100px; height:6px; overflow:hidden; margin-top:14px;">
+          <div style="width:${pct}%; height:100%; background:var(--leaf);"></div>
+        </div>
+      </div>
+      <div class="panel" style="padding:24px;">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); font-weight:700; margin-bottom:10px;">Opérateur connecté</div>
+        <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:20px; color:var(--ink);">${esc(state.auth.username)}</div>
+        <div style="color:var(--leaf); font-size:13px; margin-top:8px; font-weight:600;">● En ligne</div>
+      </div>
+      <div class="panel" style="padding:24px;">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); font-weight:700; margin-bottom:10px;">Date système</div>
+        <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:20px; color:var(--ink);">${dateStr}</div>
+        <div class="muted" style="font-size:13px; margin-top:8px;">Ferme BioGood</div>
+      </div>
+    </div>
+
+    <div class="panel" style="padding:28px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+        <h2 style="margin:0;">🌱 Inventaire Global</h2>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <input id="stockSearchInput" type="text" placeholder="Rechercher un ingrédient..." style="background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:100px; padding:10px 18px; color:var(--ink); font-size:14px; min-width:220px; width:auto; box-shadow:none;">
+          <button class="primary-btn" id="openAddStockBtn" style="width:auto; padding:10px 22px; white-space:nowrap;">+ Ajouter</button>
+        </div>
+      </div>
+      <div id="stockGrid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px;">
+        ${state.catalog.map(p=>`
+        <div class="stock-card" data-name="${esc(p.name.toLowerCase())}" style="border:1px solid ${(p.qty||0)===0?'rgba(224,108,83,0.4)':'var(--line)'}; border-radius:14px; padding:16px; display:flex; align-items:center; gap:12px; background:var(--panel-2);">
+          <div style="width:52px; height:52px; border-radius:10px; overflow:hidden; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.03);">${iconHtml(p,52)}</div>
+          <div style="flex:1;">
+            <div style="font-size:13px; color:var(--ink-soft);">${esc(p.name)}</div>
+            ${isPatron ? `
+              <input class="mini-input" data-inventorystock="${p.id}" type="number" value="${p.qty||0}" style="margin-top:4px; width:70px; padding:6px; font-size:13px; background:rgba(0,0,0,0.3); border:1px solid var(--line); color:var(--leaf); font-weight:800;" />
+            ` : `<div style="font-weight:800; font-size:20px; color:${(p.qty||0)===0?'var(--danger)':'var(--leaf)'};">${p.qty||0}</div>`}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  ${state.stockModalOpen ? stockModal() : ''}
+  `;
+}
+
+function stockModal(){
+  return `
+  <div class="drawer-overlay" id="stockModalOverlay">
+    <div class="contact-panel" style="width:min(420px,94vw); padding:36px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <h2 style="margin:0;">Ajout Stock</h2>
+        <button id="closeStockModalBtn" style="background:none; border:none; color:var(--ink-soft); font-size:24px; line-height:1; cursor:pointer; padding:0; width:auto; box-shadow:none;">×</button>
+      </div>
+      <div class="field">
+        <label>Produit</label>
+        <select id="stockProductSelect">
+          ${state.catalog.map(p=>`<option value="${p.id}">${esc(p.icon||'')} ${esc(p.name)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Quantité à ajouter</label>
+        <input id="stockQtyInput" type="number" min="1" step="1" value="1" placeholder="0">
+      </div>
+      <button class="primary-btn" id="confirmAddStockBtn">Confirmer l'ajout</button>
+    </div>
+  </div>`;
+}
+
+function partnershipsPanel(){
+  const isPatron = state.auth.role === 'patron';
+  const list = [...state.partnerships].sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
+  return `
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:24px; flex-wrap:wrap;">
+    <div>
+      <h2 style="margin-bottom:4px;">Partenariat</h2>
+      <p class="muted">Les partenaires officiels de la ferme BioGood.</p>
+    </div>
+    ${isPatron ? `<button class="primary-btn" id="openAddPartnerBtn" style="width:auto; padding:12px 22px; white-space:nowrap;">+ Ajouter un partenariat</button>` : ''}
+  </div>
+  ${list.length===0 ? '<p class="muted">Aucun partenariat pour le moment.</p>' : `
+  <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px;">
+    ${list.map(p=>`
+    <div style="border:1px solid var(--line); border-radius:16px; padding:20px; background:var(--panel-2);">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+        <div style="font-weight:800; font-size:18px; font-family:'Outfit',sans-serif;">🤝 ${esc(p.name)}</div>
+        <span class="status-pill" style="${p.active ? 'background:rgba(130,163,94,0.15); color:var(--leaf);' : 'background:rgba(224,108,83,0.15); color:var(--danger);'}">${p.active?'Actif':'Inactif'}</span>
+      </div>
+      ${p.description ? `<p class="muted" style="margin-top:10px; font-size:14px;">${esc(p.description)}</p>` : ''}
+      ${isPatron ? `
+      <div class="row-actions" style="margin-top:16px;">
+        <button class="icon-btn ${p.active?'del':'save'}" data-toggpartner="${p.id}">${p.active?'Rendre inactif':'Rendre actif'}</button>
+        <button class="icon-btn del" data-delpartner="${p.id}">Supprimer</button>
+      </div>` : ''}
+    </div>`).join('')}
+  </div>`}
+  ${isPatron && state.partnerModalOpen ? partnerModal() : ''}
+  `;
+}
+
+function partnerModal(){
+  return `
+  <div class="drawer-overlay" id="partnerModalOverlay">
+    <div class="contact-panel" style="width:min(440px,94vw); padding:36px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <h2 style="margin:0;">Ajouter un partenariat</h2>
+        <button id="closePartnerModalBtn" style="background:none; border:none; color:var(--ink-soft); font-size:24px; line-height:1; cursor:pointer; padding:0; width:auto; box-shadow:none;">×</button>
+      </div>
+      <div class="field">
+        <label>Nom du partenaire</label>
+        <input id="partnerNameInput" type="text" placeholder="Ex : Garage Bennys">
+      </div>
+      <div class="field">
+        <label>Description (optionnel)</label>
+        <textarea id="partnerDescInput" rows="3" placeholder="Détails de l'accord..."></textarea>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="partnerActiveInput" checked>
+        <label for="partnerActiveInput">Partenariat actif</label>
+      </div>
+      <button class="primary-btn" id="confirmAddPartnerBtn">Ajouter</button>
+    </div>
+  </div>`;
+}
+
+function employeeAccountsPanel(){
+  const accountsToManage = state.accounts.filter(a => a.username !== state.auth.username && a.role !== 'admin');
+  return `
+  <h2>Comptes & Rôles</h2>
+  <div class="add-form" style="grid-template-columns:1fr 1fr 1fr auto;">
+    <div class="field"><label>Identifiant</label><input id="empUser" placeholder="ex : julie" /></div>
+    <div class="field"><label>Mot de passe</label><input id="empPass" type="password" placeholder="••••••••" /></div>
+    <div class="field"><label>Rôle</label>
+      <input id="empRole" type="text" placeholder="cultivateur, patron, etc..." list="roleSuggestions" />
+      <datalist id="roleSuggestions">
+        <option value="cultivateur">
+        <option value="commercial">
+        <option value="rh">
+        <option value="patron">
+      </datalist>
+    </div>
+    <button class="icon-btn save" id="addEmpBtn" style="padding:14px 20px;">+ Créer</button>
+  </div>
+  <div id="empErr" class="err" style="display:none;"></div>
+  
+  <div class="accounts-list">
+    ${accountsToManage.length===0 ? '<p class="muted">Aucun compte à gérer pour le moment.</p>' : accountsToManage.map(a=>`
+      <div class="acc-row">
+        <div style="font-size:16px;"><b>${esc(a.username)}</b> <span class="role-badge" style="margin-left:8px;">${a.role}</span></div>
+        <div style="display:flex; gap:8px;">
+          <button class="icon-btn save" data-editemp="${esc(a.username)}">Modifier</button>
+          <button class="icon-btn del" data-delemp="${esc(a.username)}">Supprimer</button>
+        </div>
+      </div>
+      ${state.editingAccount === a.username ? `
+        <div class="edit-acc-form">
+          <input type="text" id="editUsername_${esc(a.username)}" value="${esc(a.username)}" placeholder="Nouvel ID" style="width:140px; padding:8px;">
+          <input type="text" id="editPassword_${esc(a.username)}" value="${esc(a.password)}" placeholder="Nouveau MDP" style="width:140px; padding:8px;">
+          <input type="text" id="editRole_${esc(a.username)}" value="${esc(a.role)}" placeholder="Rôle" style="width:120px; padding:8px;" list="roleSuggestions">
+          <button class="icon-btn save" data-saveeditemp="${esc(a.username)}" style="padding:10px;">Valider</button>
+          <button class="icon-btn" data-canceleditemp="1" style="padding:10px;">Annuler</button>
+        </div>
+      ` : ''}
+      `).join('')}
+  </div>
+  `;
+}
+
+function employeeHomeView(){
+  const role = state.auth.role;
+  const roleLabel = {cultivateur:'Cultivateur', commercial:'Commercial', rh:'RH'}[role] || role;
+  const canInventaire = role==='commercial' || role==='rh';
+  const canCandidatures = role==='rh';
+  const canCommandes = role==='commercial' || role==='rh';
+  const content = state.employeeTab==='exportation' ? cartonsPanel()
+    : state.employeeTab==='inventaire' && canInventaire ? inventairePanel()
+    : `<div class="panel">${
+        state.employeeTab==='historique' ? historiquePanel()
+        : state.employeeTab==='classement' ? classementPanel()
+        : state.employeeTab==='candidatures' && canCandidatures ? candidaturesPanel()
+        : state.employeeTab==='commandes' && canCommandes ? commandesPanel()
+        : state.employeeTab==='partenariat' ? partnershipsPanel()
+        : monDossierPanel()
+      }</div>`;
+  return `
+  <div class="admin-shell">
+    <div class="admin-side">
+      <div class="who">Connecté : ${esc(state.auth.username)} <br><span style="color:var(--leaf);">${esc(roleLabel)}</span></div>
+      <button data-etab="exportation" class="${state.employeeTab==='exportation'?'active':''}">📦 Exportation</button>
+      ${canInventaire ? `<button data-etab="inventaire" class="${state.employeeTab==='inventaire'?'active':''}">🌱 Inventaire</button>` : ''}
+      ${canCommandes ? `<button data-etab="commandes" class="${state.employeeTab==='commandes'?'active':''}">🧾 Commandes</button>` : ''}
+      ${canCandidatures ? `<button data-etab="candidatures" class="${state.employeeTab==='candidatures'?'active':''}">📋 Candidatures</button>` : ''}
+      <button data-etab="partenariat" class="${state.employeeTab==='partenariat'?'active':''}">🤝 Partenariat</button>
+      <button data-etab="historique" class="${state.employeeTab==='historique'?'active':''}">🕘 Historique</button>
+      <button data-etab="classement" class="${state.employeeTab==='classement'?'active':''}">🏆 Classement</button>
+      <button data-etab="dossier" class="${state.employeeTab==='dossier'?'active':''}">🪪 Mon Dossier</button>
+      <button class="logout" id="logoutBtn">↩ Déconnexion</button>
+    </div>
+    ${content}
+  </div>`;
+}
+
+function adminView(){
+  return `
+  <div class="admin-shell">
+    <div class="admin-side">
+      <div class="who">Connecté : ${esc(state.auth.username)} <br><span style="color:var(--leaf);">${state.auth.role}</span></div>
+      <button data-atab="produits" class="${state.adminTab==='produits'?'active':''}">🍏 Produits</button>
+      <button data-atab="tarifs" class="${state.adminTab==='tarifs'?'active':''}">💲 Tarifs clients</button>
+      <button data-atab="commandes" class="${state.adminTab==='commandes'?'active':''}">📦 Commandes</button>
+      <button data-atab="candidatures" class="${state.adminTab==='candidatures'?'active':''}">📋 Candidatures</button>
+      <button data-atab="comptes" class="${state.adminTab==='comptes'?'active':''}">👤 Comptes</button>
+      <button class="logout" id="logoutBtn">↩ Déconnexion</button>
+    </div>
+    <div class="panel">
+      ${state.adminTab==='produits' ? produitsPanel() : state.adminTab==='tarifs' ? tarifsPanel() : state.adminTab==='commandes' ? commandesPanel() : state.adminTab==='candidatures' ? candidaturesPanel() : comptesPanel()}
+    </div>
+  </div>`;
+}
+
+function accueilView(){
+  const items = state.catalog.filter(p => state.activeCat==='all' || p.category===state.activeCat);
+  return `
+  <div class="hero" style="background-image:url('${HERO_BG}');">
+    <div class="hero-top">
+      <div class="brand">
+        <img src="https://i.goopics.net/fmmtwn.png" class="brand-logo" alt="Logo">
+        <div class="brand-text"><h1>Ferme BioGood</h1><span>L'art du bio</span></div>
+      </div>
+      <div class="hero-actions">
+        <button id="goEmployee" class="hero-btn">Employés</button>
+        <button id="goApply" class="hero-btn">Nous rejoindre</button>
+        <button id="goContact" class="hero-btn">Nous contacter</button>
+        <button id="goLogin" class="hero-btn hero-btn-primary">Connexion client</button>
+      </div>
+    </div>
+    <div class="hero-content">
+      <h2 class="hero-title">Des produits frais,<br>cultivés avec passion.</h2>
+      <p class="hero-sub">Découvrez nos fruits, nos légumes et les produits locaux de notre ferme, directement du champ à votre table.</p>
+    </div>
+  </div>
+
+  <h2 style="text-align:center; margin:48px 0 24px; font-size:32px;">Notre Catalogue</h2>
+  <div class="cats" style="justify-content:center;">
+    <button data-cat="all" class="${state.activeCat==='all'?'active':''}">Tous</button>
+    ${Object.entries(CATS).map(([k,v])=>`<button data-cat="${k}" class="${state.activeCat===k?'active':''}">${v}</button>`).join('')}
+  </div>
+  <div class="grid">
+    ${items.map(p=>`
+      <div class="product-card">
+        <div class="product-card-img">${iconHtml(p,'100%')}</div>
+        <div class="product-card-content">
+          <div class="name">${esc(p.name)}</div>
+          <div class="price-tag">${p.price}$ / unité</div>
+        </div>
+      </div>`).join('')}
+  </div>
+  <div style="text-align:center; margin:40px 0 20px;">
+    <button id="goLogin2" class="primary-btn" style="width:auto; padding:18px 40px; font-size:16px;">Se connecter pour commander</button>
+  </div>
+  `;
+}
+
+function loginPageWrap(){
+  return `
+  <div class="topbar">
+    <div class="brand">
+      <img src="https://i.goopics.net/fmmtwn.png" class="brand-logo" alt="Logo">
+      <div class="brand-text"><h1>Ferme BioGood</h1><span>L'art du bio</span></div>
+    </div>
+    <button id="backHome" class="hero-btn">← Retour à l'accueil</button>
+  </div>
+  ${loginGate()}
+  `;
+}
+
+function contactModal(){
+  return `
+  <div class="drawer-overlay" id="contactOverlay">
+    <div class="contact-panel">
+      <h2 style="margin-bottom:12px;">Nous contacter</h2>
+      <p class="muted" style="margin-bottom:32px;">Une question ou une demande spéciale ? Contactez directement l'un de nos responsables.</p>
+      
+      <div class="contact-card">
+        <img src="https://i.goopics.net/npfvay.png" alt="Sione Aiono" class="contact-avatar">
+        <div>
+          <div class="contact-name">Sione Aiono</div>
+          <div class="contact-role">Patron de la ferme</div>
+          <a class="contact-phone" href="tel:9474358">📞 947-4358</a>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <img src="https://i.goopics.net/vyfyrp.png" alt="Teeway Beckers" class="contact-avatar">
+        <div>
+          <div class="contact-name">Teeway Beckers</div>
+          <div class="contact-role">Co-Patron</div>
+          <a class="contact-phone" href="tel:496-7073">📞 496-7073</a>
+        </div>
+      </div>
+      <button class="icon-btn" id="closeContact" style="margin-top:24px; width:100%; padding:16px; background:rgba(255,255,255,0.05); border:1px solid var(--line); font-size:15px;">Fermer</button>
+    </div>
+  </div>`;
+}
+
+function applyModal(){
+  return `
+  <div class="drawer-overlay" id="applyOverlay">
+    <div class="contact-panel" style="width:min(640px,94vw); max-height:90vh; overflow-y:auto; padding:40px;">
+      <h2 style="margin-bottom:12px; font-size:28px;">Nous rejoindre</h2>
+      <p class="muted" style="margin-bottom:32px;">Envoyez votre candidature, nous reviendrons vers vous rapidement pour en discuter.</p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div class="field"><label>Prénom</label><input id="cvPrenom" placeholder="Ex : Julie" /></div>
+        <div class="field"><label>Nom</label><input id="cvNom" placeholder="Ex : Martin" /></div>
+        <div class="field"><label>Âge</label><input id="cvAge" type="number" min="14" max="99" placeholder="Ex : 24" /></div>
+        <div class="field"><label>Téléphone</label><input id="cvTel" type="tel" placeholder="Ex : 555-9712" /></div>
+      </div>
+      <div class="field"><label>Compétences principales</label><input id="cvCompetences" placeholder="Ex : Sens du relationnel..." /></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div class="field"><label>Qualités</label><input id="cvQualites" placeholder="Ex : Rigueur, ponctualité" /></div>
+        <div class="field"><label>Défauts</label><input id="cvDefauts" placeholder="Ex : Impatience" /></div>
+      </div>
+      <div class="field"><label>Expériences passées</label><textarea id="cvExperience" rows="2" placeholder="Ex : Vendeur au LTD etc..."></textarea></div>
+      <div class="field"><label>Pourquoi la Ferme BioGood ?</label><textarea id="cvMotivation" rows="2" placeholder="Expliquez vos motivations..."></textarea></div>
+      <div class="field" style="margin-bottom:0;"><label>Disponibilités horaires</label><input id="cvDispo" placeholder="Ex : Tous les jours de 19H jusqu'à 00H" /></div>
+
+      <div id="applyErr" class="err" style="display:none; margin-bottom:20px;"></div>
+      <button class="primary-btn" id="submitApply" style="margin-top:32px;">Envoyer ma candidature</button>
+      <button class="icon-btn" id="closeApply" style="margin-top:16px; width:100%; padding:16px; background:rgba(255,255,255,0.05); border:1px solid var(--line); font-size:15px;">Annuler</button>
+    </div>
+  </div>`;
+}
+
+function employeeModal(){
+  return `
+  <div class="drawer-overlay" id="employeeOverlay">
+    <div class="contact-panel" style="background:#161813; border:1px solid #2A3024; padding:32px; border-radius:24px;">
+      <h2 style="margin-bottom:8px; font-size:24px; color:#FFF; font-family:'Outfit',sans-serif;">Espace Employé</h2>
+      <p class="muted" style="margin-bottom:24px; font-size:14.5px;">Sélectionnez votre portail métier pour vous connecter.</p>
+      
+      <div class="emp-grid">
+        <button class="emp-btn emp-green" data-employee-role="cultivateur">🌱 Cultivateur</button>
+        <button class="emp-btn emp-green" data-employee-role="commercial">📈 Commercial</button>
+        <button class="emp-btn emp-green" data-employee-role="rh">🗂️ RH</button>
+        <button class="emp-btn emp-amber" data-employee-role="patron">👑 Patron</button>
+      </div>
+      
+      <button class="emp-btn emp-close" id="closeEmployee">Fermer</button>
+    </div>
+  </div>`;
+}
+
+function loginGate(){
+  return `
+  <div class="login-wrap">
+    <h2>Bon retour !</h2>
+    <p class="sub">Veuillez renseigner vos identifiants pour accéder à votre espace.</p>
+    <div class="field"><label>Identifiant</label><input id="loginUser" placeholder="Ex: client" /></div>
+    <div class="field"><label>Mot de passe</label><input id="loginPass" type="password" placeholder="••••••••" /></div>
+    <div class="checkbox-row" style="margin-bottom:20px;">
+        <input type="checkbox" id="rememberMeCheck" checked>
+        <label for="rememberMeCheck">Se souvenir de moi sur cette tablette</label>
+    </div>
+    ${state.loginErr ? `<div class="err">${esc(state.loginErr)}</div>` : ''}
+    <button class="primary-btn" id="loginBtn">Se connecter</button>
+  </div>`;
+}
+
+function produitsPanel(){
+  return `
+  <h2>Gestion du Catalogue</h2>
+  <div class="add-form">
+    <div class="field"><label>Nom</label><input id="newName" placeholder="Ex : Fraise" /></div>
+    <div class="field"><label>Prix unitaire ($)</label><input id="newPrice" type="number" min="0" step="0.5" placeholder="5" /></div>
+    <div class="field"><label>Catégorie</label>
+      <select id="newCat">
+        <option value="fruits">Fruits</option>
+        <option value="legumes">Légumes & Divers</option>
+      </select>
+    </div>
+    <div class="field"><label>Icône (emoji)</label><input id="newIcon" placeholder="🍓" /></div>
+    <button class="primary-btn" id="addProductBtn" style="padding:14px 24px; width:auto;">+ Ajouter au catalogue</button>
+  </div>
+  <table>
+    <thead><tr><th>Image</th><th>Nom du produit</th><th>Catégorie</th><th>Prix base</th><th>Actions</th></tr></thead>
+    <tbody>
+      ${state.catalog.map(p=>`
+      <tr>
+        <td>${iconHtml(p,40)}</td>
+        <td style="font-weight:600; font-family:'Outfit',sans-serif; font-size:16px;">${esc(p.name)}</td>
+        <td>${CATS[p.category]||p.category}</td>
+        <td><input class="mini-input" data-price="${p.id}" type="number" min="0" step="0.5" value="${p.price}" /></td>
+        <td class="row-actions">
+          <button class="icon-btn save" data-save="${p.id}">MAJ</button>
+          <button class="icon-btn del" data-del="${p.id}">Supprimer</button>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function tarifsPanel(){
+  const clientAccounts = state.accounts.filter(a=>a.role!=='admin');
+  const selected = state.selectedPricingClient;
+  return `
+  <h2>Tarifs Préférentiels</h2>
+  <p class="muted" style="margin-bottom:24px;">Appliquez des tarifs spécifiques pour certains clients ou revendeurs. Laissez vide pour conserver le prix du catalogue officiel.</p>
+  <div class="field" style="max-width:360px;">
+    <label>Sélectionnez un compte client</label>
+    <select id="pricingClientSelect">
+      <option value="">— Aucun compte sélectionné —</option>
+      ${clientAccounts.map(a=>`<option value="${esc(a.username)}" ${selected===a.username?'selected':''}>${esc(a.username)} (${a.role})</option>`).join('')}
+    </select>
+  </div>
+  ${clientAccounts.length===0 ? '<p class="muted">Aucun compte client/vendeur disponible. Vous pouvez en créer dans l\'onglet Comptes.</p>' : ''}
+  ${selected ? renderPricingTable(selected) : ''}
+  `;
+}
+
+function renderPricingTable(username){
+  const overrides = state.customPricing[username] || {};
+  return `
+  <div class="table-scroll" style="margin-top:24px;">
+  <table>
+    <thead><tr><th>Produit</th><th>Nom</th><th>Prix Officiel</th><th>Prix Personnalisé</th><th></th></tr></thead>
+    <tbody>
+      ${state.catalog.map(p=>{
+        const override = overrides[p.id];
+        return `
+        <tr>
+          <td>${iconHtml(p,36)}</td>
+          <td style="font-weight:600;">${esc(p.name)}</td>
+          <td style="font-family:'Space Grotesk',monospace; color:var(--ink-soft); font-size:15px;">${p.price}$</td>
+          <td><input class="mini-input" data-cp="${p.id}" type="number" min="0" step="0.5" placeholder="${p.price}" value="${override!=null?override:''}" /></td>
+          <td>${override!=null ? `<button class="icon-btn del" data-cpreset="${p.id}">Reset</button>` : ''}</td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>
+  </div>
+  <button class="primary-btn" id="savePricingBtn" style="margin-top:24px; max-width:360px;">Enregistrer la grille pour ${esc(username)}</button>
+  `;
+}
+
+function candidaturesPanel(){
+  const apps = [...state.applications].sort((a,b)=> new Date(b.date)-new Date(a.date));
+  return `
+  <h2>Candidatures Reçues</h2>
+  ${apps.length===0 ? '<p class="muted">La boîte de réception est vide.</p>' : apps.map(a=>{
+    const status = a.status || 'attente';
+    const statusStyle = status==='acceptee' ? 'background:rgba(130,163,94,0.15); color:var(--leaf);'
+      : status==='refusee' ? 'background:rgba(224,108,83,0.15); color:var(--danger);'
+      : 'background:rgba(226,176,80,0.15); color:var(--amber);';
+    const statusLabel = status==='acceptee' ? 'Acceptée' : status==='refusee' ? 'Refusée' : 'En attente';
+    return `
+    <div class="card" style="margin-bottom:16px; align-items:stretch;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div style="font-weight:800; font-family:'Outfit',sans-serif; font-size:20px;">${esc(a.prenom)} ${esc(a.nom)} ${a.age?`<span class="muted" style="font-weight:500; font-size:16px;">— ${esc(a.age)} ans</span>`:''}</div>
+            <span class="status-pill" style="${statusStyle}">${statusLabel}</span>
+          </div>
+          <a class="contact-phone" href="tel:${esc(a.tel)}" style="display:inline-block; margin-top:4px;">📞 ${esc(a.tel)}</a>
+          <div class="muted" style="margin-top:6px; font-size:13px;">Reçue le ${new Date(a.date).toLocaleString('fr-FR')}</div>
+        </div>
+        <div class="row-actions" style="flex-wrap:wrap;">
+          <button class="icon-btn save" data-cvstatus="${a.id}|acceptee">✓ Accepter</button>
+          <button class="icon-btn del" data-cvstatus="${a.id}|refusee">✕ Refuser</button>
+          <button class="icon-btn" data-delcv="${a.id}">Supprimer</button>
+        </div>
+      </div>
+      <div style="margin-top:16px; padding:16px; background:rgba(255,255,255,0.02); border-radius:12px; font-size:14.5px; display:grid; gap:10px; border:1px solid var(--line-soft);">
+        ${a.competences?`<div><b style="color:var(--amber);">Compétences :</b> ${esc(a.competences)}</div>`:''}
+        ${a.qualites?`<div><b style="color:var(--leaf);">Qualités :</b> ${esc(a.qualites)}</div>`:''}
+        ${a.defauts?`<div><b style="color:var(--danger);">Défauts :</b> ${esc(a.defauts)}</div>`:''}
+        ${a.experience?`<div><b>Expérience :</b> ${esc(a.experience)}</div>`:''}
+        ${a.motivation?`<div><b>Motivation :</b> ${esc(a.motivation)}</div>`:''}
+        ${a.dispo?`<div><b>Disponibilités :</b> ${esc(a.dispo)}</div>`:''}
+      </div>
+    </div>
+  `;}).join('')}
+  `;
+}
+
+function commandesPanel(){
+  const orders = [...state.orders].sort((a,b)=> new Date(b.date)-new Date(a.date));
+  const isPatron = state.auth && state.auth.role === 'patron';
+
+  return `
+  <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; gap: 16px; flex-wrap:wrap;">
+    <div>
+      <h2 style="margin-bottom:8px;">Journal des Commandes</h2>
+      <p class="muted">Gérez les commandes entrantes et mettez à jour leur statut.</p>
+    </div>
+    <img src="https://i.goopics.net/fmmtwn.png" alt="Logo Ferme BioGood" style="height:70px; object-fit:contain; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.5));">
+  </div>
+  ${orders.length===0 ? '<p class="muted">Aucune commande n\'a été passée pour le moment.</p>' : `
+  <div style="display:grid; gap:16px;">
+    ${orders.map(o=>{
+      const borderColor = o.status==='attente'?'var(--amber)':o.status==='preparation'?'#9CC4C4':o.status==='prete'?'var(--leaf)':o.status==='annulee'?'var(--danger)':'var(--ink-soft)';
+      return `
+      <div class="admin-order-card" style="border-left: 4px solid ${borderColor};">
+        <div class="aoc-header">
+          <div>
+            <div style="font-size:13px; color:var(--ink-soft); font-family:'Space Grotesk',monospace; margin-bottom:4px;">Commande du ${new Date(o.date).toLocaleString('fr-FR')}</div>
+            <div class="aoc-client">${esc(o.client)}</div>
+            <div style="font-size:14px; color:var(--ink-soft); margin-top:2px;">📞 ${esc(o.phone||'—')}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:20px; font-weight:800; color:var(--amber); font-family:'Space Grotesk',monospace;">${o.total.toFixed(2)}$</div>
+            <div style="font-size:13px; font-weight:600; margin-top:4px; color:var(--ink-soft);">${o.asap ? 'Livraison ASAP' : (o.desiredDate ? 'Pour le '+new Date(o.desiredDate).toLocaleDateString('fr-FR') : '—')}</div>
+          </div>
+        </div>
+        
+        <div class="aoc-items">
+          ${o.items.map(i=>`<span style="display:inline-block; margin-right:20px; margin-bottom:4px;"><b>${i.qty}×</b> ${esc(i.name)}</span>`).join('')}
+        </div>
+
+        <div style="display:flex; align-items:center; gap:12px; justify-content:space-between; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <label style="margin:0; font-size:13px; color:var(--ink-soft);">Modifier le statut :</label>
+            <select data-status="${o.id}" style="padding:10px 16px; font-size:14px; width:auto; border-radius:10px; border:1px solid var(--line); background:var(--bg-deep); font-weight:600;">
+              <option value="attente" ${o.status==='attente'?'selected':''}>⏳ En attente</option>
+              <option value="preparation" ${o.status==='preparation'?'selected':''}>🛠️ En préparation</option>
+              <option value="prete" ${o.status==='prete'?'selected':''}>✅ Prête</option>
+              <option value="livree" ${o.status==='livree'?'selected':''}>📦 Livrée</option>
+              ${isPatron ? `<option value="annulee" ${o.status==='annulee'?'selected':''}>❌ Annulée</option>` : ''}
+            </select>
+            ${o.stockDeducted ? `<span style="font-size:12px; color:var(--leaf); font-weight:bold;">Stock Déduit ✓</span>` : ''}
+          </div>
+          ${isPatron ? `
+            <button class="icon-btn del" data-delorder="${o.id}">Supprimer définitivement</button>
+          ` : ''}
+        </div>
+      </div>`
+    }).join('')}
+  </div>`}`;
+}
+
+function comptesPanel(){
+  return `
+  <h2>Gestion des Accès</h2>
+  <div class="add-form" style="grid-template-columns:1fr 1fr 1fr auto;">
+    <div class="field"><label>Identifiant</label><input id="accUser" placeholder="ex : ClientVIP" /></div>
+    <div class="field"><label>Mot de passe</label><input id="accPass" type="password" placeholder="••••••••" /></div>
+    <div class="field"><label>Type de compte</label>
+      <select id="accRole">
+        <option value="client">Client</option>
+        <option value="vendeur">Vendeur</option>
+        <option value="admin">Administrateur</option>
+      </select>
+    </div>
+    <button class="primary-btn" id="addAccountBtn" style="padding:14px 20px; width:auto;">+ Créer compte</button>
+  </div>
+  <div id="accErr" class="err" style="display:none;"></div>
+  <div class="accounts-list">
+    ${state.accounts.map(a=>`
+      <div class="acc-row">
+        <div style="font-size:16px; font-family:'Outfit',sans-serif;"><b>${esc(a.username)}</b> <span class="role-badge" style="margin-left:8px;">${a.role}</span></div>
+        ${a.username!==state.auth.username ? `<button class="icon-btn del" data-delacc="${esc(a.username)}">Révoquer accès</button>` : `<span class="muted" style="font-size:13px; font-weight:600;">(Votre compte)</span>`}
+      </div>`).join('')}
+  </div>`;
+}
+
+/* ---------------- events ---------------- */
+function attachEvents(){
+  document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>setState({view:b.dataset.nav}));
+  document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>setState({activeCat:b.dataset.cat}));
+
+  const manualRefreshBtn = document.getElementById('manualRefreshBtn');
+  if(manualRefreshBtn) manualRefreshBtn.onclick = onManualRefresh;
+
+  // homepage / public flow
+  const goLogin = document.getElementById('goLogin');
+  if(goLogin) goLogin.onclick = ()=> setState({publicView:'login'});
+  const goLogin2 = document.getElementById('goLogin2');
+  if(goLogin2) goLogin2.onclick = ()=> setState({publicView:'login'});
+  const backHome = document.getElementById('backHome');
+  if(backHome) backHome.onclick = ()=> setState({publicView:'accueil', loginErr:''});
+  const goContact = document.getElementById('goContact');
+  if(goContact) goContact.onclick = ()=> setState({contactOpen:true});
+  const closeContact = document.getElementById('closeContact');
+  if(closeContact) closeContact.onclick = ()=> setState({contactOpen:false});
+  const contactOverlay = document.getElementById('contactOverlay');
+  if(contactOverlay) contactOverlay.addEventListener('click', e=>{ if(e.target===contactOverlay) setState({contactOpen:false}); });
+
+  const goApply = document.getElementById('goApply');
+  if(goApply) goApply.onclick = ()=> setState({applyOpen:true, applyErr:''});
+  const closeApply = document.getElementById('closeApply');
+  if(closeApply) closeApply.onclick = ()=> setState({applyOpen:false});
+  const applyOverlay = document.getElementById('applyOverlay');
+  if(applyOverlay) applyOverlay.addEventListener('click', e=>{ if(e.target===applyOverlay) setState({applyOpen:false}); });
+  const submitApply = document.getElementById('submitApply');
+  if(submitApply) submitApply.onclick = onSubmitApplication;
+
+  const goEmployee = document.getElementById('goEmployee');
+  if(goEmployee) goEmployee.onclick = ()=> setState({employeeOpen:true});
+  const closeEmployee = document.getElementById('closeEmployee');
+  if(closeEmployee) closeEmployee.onclick = ()=> setState({employeeOpen:false});
+  const employeeOverlay = document.getElementById('employeeOverlay');
+  if(employeeOverlay) employeeOverlay.addEventListener('click', e=>{ if(e.target===employeeOverlay) setState({employeeOpen:false}); });
+
+  document.querySelectorAll('[data-employee-role]').forEach(b => {
+    b.onclick = () => {
+      const role = b.dataset.employeeRole;
+      setState({employeeOpen:false, publicView:'login'});
+    };
+  });
+
+  const loginBtn = document.getElementById('loginBtn');
+  if(loginBtn) loginBtn.onclick = onLogin;
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  if(logoutBtn) logoutBtn.onclick = onLogout;
+  const headerLogout = document.getElementById('headerLogout');
+  if(headerLogout) headerLogout.onclick = onLogout;
+
+  // Cart / Shop
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{ changeQty(b.dataset.add,1); toast('Ajouté au panier'); });
+  document.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>changeQty(b.dataset.dec,-1));
+  document.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>changeQty(b.dataset.inc,1));
+  document.querySelectorAll('[data-qtyset]').forEach(inpt=>inpt.onchange=(e)=>setQty(e.target.dataset.qtyset, e.target.value));
+
+  const openCart = document.getElementById('openCart');
+  if(openCart) openCart.onclick = ()=>setState({cartOpen:true});
+  const closeDrawer = document.getElementById('closeDrawer');
+  if(closeDrawer) closeDrawer.onclick = ()=>setState({cartOpen:false});
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  if(drawerOverlay) drawerOverlay.addEventListener('click', e=>{ if(e.target===drawerOverlay) setState({cartOpen:false}); });
+  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>setQty(b.dataset.rm,0));
+
+  const submitOrder = document.getElementById('submitOrder');
+  if(submitOrder) submitOrder.onclick = onSubmitOrder;
+  document.querySelectorAll('[data-reorder]').forEach(b=>b.onclick=()=>onReorder(b.dataset.reorder));
+
+  // Admin routing
+  document.querySelectorAll('[data-atab]').forEach(b=>b.onclick=()=>setState({adminTab:b.dataset.atab}));
+  document.querySelectorAll('[data-etab]').forEach(b=>b.onclick=()=>setState({employeeTab:b.dataset.etab}));
+  document.querySelectorAll('[data-ptab]').forEach(b=>b.onclick=()=>setState({patronTab:b.dataset.ptab}));
+
+  // Catalog edit
+  const addProductBtn = document.getElementById('addProductBtn');
+  if(addProductBtn) addProductBtn.onclick = onAddProduct;
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>onDelProduct(b.dataset.del));
+  document.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>onSaveProduct(b.dataset.save));
+
+  // Orders edit & delete
+  document.querySelectorAll('[data-status]').forEach(sel=>sel.onchange=(e)=>onStatusChange(e.target.dataset.status, e.target.value));
+  document.querySelectorAll('[data-delorder]').forEach(b=>b.onclick=()=>onDelOrder(b.dataset.delorder));
+
+  // Accounts
+  const addAccountBtn = document.getElementById('addAccountBtn');
+  if(addAccountBtn) addAccountBtn.onclick = ()=>onAddAccount('accUser','accPass','accRole','accErr');
+  document.querySelectorAll('[data-delacc]').forEach(b=>b.onclick=()=>onDelAccount(b.dataset.delacc));
+  
+  // Custom Pricing
+  const pricingClientSelect = document.getElementById('pricingClientSelect');
+  if(pricingClientSelect) pricingClientSelect.onchange = (e)=>setState({selectedPricingClient:e.target.value});
+  document.querySelectorAll('[data-cpreset]').forEach(b=>b.onclick=()=>onCpReset(b.dataset.cpreset));
+  const savePricingBtn = document.getElementById('savePricingBtn');
+  if(savePricingBtn) savePricingBtn.onclick = onSavePricing;
+
+  // Applications (CV)
+  document.querySelectorAll('[data-delcv]').forEach(b=>b.onclick=()=>onDelCV(b.dataset.delcv));
+  document.querySelectorAll('[data-cvstatus]').forEach(b=>b.onclick=()=>{
+    const [id,st] = b.dataset.cvstatus.split('|');
+    onUpdateCV(id,st);
+  });
+
+  // Cartons / Exportation
+  document.querySelectorAll('[data-cartinc]').forEach(b=>b.onclick=()=>{
+    const inc = parseInt(b.dataset.cartinc, 10);
+    setState({cartonsPending: (state.cartonsPending||0)+inc});
+  });
+  const resetCartBtn = document.getElementById('resetCartBtn');
+  if(resetCartBtn) resetCartBtn.onclick = ()=>setState({cartonsPending:0});
+  const addCustomCartonBtn = document.getElementById('addCustomCartonBtn');
+  if(addCustomCartonBtn) addCustomCartonBtn.onclick = ()=>{
+    const v = parseInt(document.getElementById('customCartonInput').value,10);
+    if(v>0) setState({cartonsPending: (state.cartonsPending||0)+v});
+  };
+  const confirmExportBtn = document.getElementById('confirmExportBtn');
+  if(confirmExportBtn) confirmExportBtn.onclick = onConfirmExport;
+
+  // Stock additions (Inventaire global)
+  const openAddStockBtn = document.getElementById('openAddStockBtn');
+  if(openAddStockBtn) openAddStockBtn.onclick = ()=>setState({stockModalOpen:true});
+  const closeStockModalBtn = document.getElementById('closeStockModalBtn');
+  if(closeStockModalBtn) closeStockModalBtn.onclick = ()=>setState({stockModalOpen:false});
+  const stockModalOverlay = document.getElementById('stockModalOverlay');
+  if(stockModalOverlay) stockModalOverlay.addEventListener('click', e=>{ if(e.target===stockModalOverlay) setState({stockModalOpen:false}); });
+  const confirmAddStockBtn = document.getElementById('confirmAddStockBtn');
+  if(confirmAddStockBtn) confirmAddStockBtn.onclick = onConfirmAddStock;
+
+  const stockSearchInput = document.getElementById('stockSearchInput');
+  if(stockSearchInput){
+    stockSearchInput.addEventListener('input', (e)=>{
+      const term = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.stock-card').forEach(card => {
+        if(card.dataset.name.includes(term)) card.style.display = 'flex';
+        else card.style.display = 'none';
+      });
+    });
+  }
+  
+  // Patron inventory update
+  document.querySelectorAll('[data-inventorystock]').forEach(inpt=>{
+    inpt.onchange = (e) => {
+      const pId = e.target.dataset.inventorystock;
+      const v = Math.max(0, parseInt(e.target.value,10) || 0);
+      const catItem = state.catalog.find(x=>x.id===pId);
+      if(catItem){
+        catItem.qty = v;
+        saveCatalog();
+        toast('Stock mis à jour');
+      }
+    };
+  });
+
+  // Patron/RH Employee account management
+  const addEmpBtn = document.getElementById('addEmpBtn');
+  if(addEmpBtn) addEmpBtn.onclick = ()=>onAddAccount('empUser','empPass','empRole','empErr');
+  document.querySelectorAll('[data-delemp]').forEach(b=>b.onclick=()=>onDelAccount(b.dataset.delemp));
+  
+  // Edition des rôles
+  document.querySelectorAll('[data-editemp]').forEach(b=>b.onclick=()=>setState({editingAccount: b.dataset.editemp}));
+  document.querySelectorAll('[data-canceleditemp]').forEach(b=>b.onclick=()=>setState({editingAccount: null}));
+  document.querySelectorAll('[data-saveeditemp]').forEach(b=>b.onclick=()=>{
+     const oldUsername = b.dataset.saveeditemp;
+     const newUsername = document.getElementById(`editUsername_${oldUsername}`).value.trim();
+     const newPassword = document.getElementById(`editPassword_${oldUsername}`).value;
+     const newRole = document.getElementById(`editRole_${oldUsername}`).value.trim();
+     if(newUsername && newPassword && newRole) {
+       const accounts = [...state.accounts];
+       const accIndex = accounts.findIndex(x => x.username === oldUsername);
+       if(accIndex !== -1) {
+         accounts[accIndex] = {username: newUsername, password: newPassword, role: newRole};
+         state.accounts = accounts;
+         saveAccounts();
+         toast('Compte modifié');
+         setState({editingAccount: null});
+       }
+     }
+  });
+
+  // Partnerships
+  const openAddPartnerBtn = document.getElementById('openAddPartnerBtn');
+  if(openAddPartnerBtn) openAddPartnerBtn.onclick = ()=>setState({partnerModalOpen:true});
+  const closePartnerModalBtn = document.getElementById('closePartnerModalBtn');
+  if(closePartnerModalBtn) closePartnerModalBtn.onclick = ()=>setState({partnerModalOpen:false});
+  const partnerModalOverlay = document.getElementById('partnerModalOverlay');
+  if(partnerModalOverlay) partnerModalOverlay.addEventListener('click', e=>{ if(e.target===partnerModalOverlay) setState({partnerModalOpen:false}); });
+  
+  const confirmAddPartnerBtn = document.getElementById('confirmAddPartnerBtn');
+  if(confirmAddPartnerBtn) confirmAddPartnerBtn.onclick = onAddPartner;
+  document.querySelectorAll('[data-delpartner]').forEach(b=>b.onclick=()=>onDelPartner(b.dataset.delpartner));
+  document.querySelectorAll('[data-toggpartner]').forEach(b=>b.onclick=()=>onTogglePartner(b.dataset.toggpartner));
+}
+
+// Logic implementations
+function onLogin(){
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const rem = document.getElementById('rememberMeCheck');
+  if(!u || !p) return setState({loginErr:'Veuillez remplir tous les champs.'});
+  const acc = state.accounts.find(x=>x.username===u && x.password===p);
+  if(!acc) return setState({loginErr:'Identifiants incorrects.'});
+  
+  if (rem && rem.checked) {
+      localStorage.setItem('biogood_saved_login', JSON.stringify({u, p}));
+  } else {
+      localStorage.removeItem('biogood_saved_login');
+  }
+
+  let nextView = 'shop';
+  if(acc.role==='admin' || acc.role==='vendeur') nextView = 'admin';
+  else if(acc.role==='patron') nextView = 'patron';
+  else if(['cultivateur','commercial','rh'].includes(acc.role)) nextView = 'employeeHome';
+  
+  setState({auth:acc, view:nextView, loginErr:''});
+}
+function onLogout(){
+  localStorage.removeItem('biogood_saved_login');
+  setState({auth:null, publicView:'accueil', cart:{}, loginErr:''});
+}
+
+function onAddProduct(){
+  const name = document.getElementById('newName').value.trim();
+  const price = parseFloat(document.getElementById('newPrice').value);
+  const cat = document.getElementById('newCat').value;
+  const icon = document.getElementById('newIcon').value.trim() || '📦';
+  if(!name || isNaN(price)) return toast('Informations invalides');
+  const id = 'p_'+Date.now();
+  state.catalog.push({id, name, price, category:cat, icon, qty:0});
+  saveCatalog();
+  toast('Produit ajouté');
+  render();
+}
+function onDelProduct(id){
+  if(confirm("Supprimer ce produit du catalogue ?")){
+    state.catalog = state.catalog.filter(p=>p.id!==id);
+    saveCatalog();
+    render();
+  }
+}
+function onSaveProduct(id){
+  const el = document.querySelector(`input[data-price="${id}"]`);
+  if(!el) return;
+  const nv = parseFloat(el.value);
+  if(isNaN(nv)||nv<0) return toast('Prix invalide');
+  const p = state.catalog.find(x=>x.id===id);
+  if(p){ p.price = nv; saveCatalog(); toast('Prix mis à jour'); }
+}
+
+function onAddAccount(uId, pId, rId, errId){
+  const u = document.getElementById(uId).value.trim();
+  const p = document.getElementById(pId).value;
+  const r = document.getElementById(rId).value;
+  if(!u || !p) {
+    document.getElementById(errId).style.display='block';
+    document.getElementById(errId).textContent = 'Champs requis.';
+    return;
+  }
+  if(state.accounts.some(x=>x.username===u)) {
+    document.getElementById(errId).style.display='block';
+    document.getElementById(errId).textContent = 'Identifiant déjà utilisé.';
+    return;
+  }
+  state.accounts.push({username:u, password:p, role:r});
+  saveAccounts();
+  toast('Compte créé');
+  render();
+}
+function onDelAccount(username){
+  if(confirm("Supprimer l'accès pour "+username+" ?")){
+    state.accounts = state.accounts.filter(x=>x.username!==username);
+    saveAccounts();
+    render();
+  }
+}
+
+function onSubmitOrder(){
+  const err = document.getElementById('orderErr');
+  const cName = document.getElementById('clientName').value.trim();
+  const cPers = document.getElementById('contactPerson').value.trim();
+  const cPhone = document.getElementById('phoneNumber').value.trim();
+  const asap = document.getElementById('asapCheck').checked;
+  const dDate = document.getElementById('desiredDate').value;
+  
+  if(!cName || (!asap && !dDate)) {
+    err.style.display='block';
+    err.textContent = 'Veuillez remplir votre nom et une option de livraison.';
+    return;
+  }
+  const items = Object.entries(state.cart).map(([id,qty])=>{
+    const p = state.catalog.find(x=>x.id===id);
+    return p ? {id, name:p.name, price:effectivePrice(p), qty} : null;
+  }).filter(Boolean);
+  
+  if(!items.length) return;
+
+  const o = {
+    id: 'o_'+Date.now(),
+    date: new Date().toISOString(),
+    username: state.auth.username,
+    client: cName, contactPerson: cPers, phone: cPhone,
+    asap, desiredDate: dDate,
+    items, total: cartTotal(), status: 'attente',
+    stockDeducted: false
+  };
+  state.orders.push(o);
+  saveOrders();
+  setState({cart:{}, cartOpen:false, view:'mesCommandes'});
+  toast('Commande validée !');
+}
+
+function onReorder(oId){
+  const o = state.orders.find(x=>x.id===oId);
+  if(!o) return;
+  const cart = {};
+  o.items.forEach(i=>{
+    if(state.catalog.some(p=>p.id===i.id)) cart[i.id] = i.qty;
+  });
+  setState({cart, cartOpen:true, view:'shop'});
+  toast('Panier rempli');
+}
+
+function onStatusChange(id, val){
+  const o = state.orders.find(x=>x.id===id);
+  if(o){
+    o.status = val;
+    // Déduction des stocks à la livraison si ça n'a pas déjà été fait
+    if(val === 'livree' && !o.stockDeducted) {
+        o.items.forEach(item => {
+            let catItem = state.catalog.find(c => c.id === item.id);
+            if(catItem) {
+                catItem.qty = Math.max(0, (catItem.qty || 0) - item.qty);
+            }
+        });
+        o.stockDeducted = true;
+        saveCatalog();
+    }
+    saveOrders();
+    toast('Statut mis à jour');
+    render();
+  }
+}
+
+function onDelOrder(id){
+    if(confirm("Voulez-vous vraiment supprimer cette commande ?")){
+        state.orders = state.orders.filter(x => x.id !== id);
+        saveOrders();
+        toast('Commande supprimée');
+        render();
+    }
+}
+
+function onCpReset(id){
+  if(!state.selectedPricingClient) return;
+  if(state.customPricing[state.selectedPricingClient]){
+    delete state.customPricing[state.selectedPricingClient][id];
+    saveCustomPricing();
+    render();
+  }
+}
+
+function onSavePricing(){
+  if(!state.selectedPricingClient) return;
+  const clientMap = state.customPricing[state.selectedPricingClient] || {};
+  document.querySelectorAll('input[data-cp]').forEach(inpt=>{
+    const v = inpt.value;
+    const id = inpt.dataset.cp;
+    if(v==='') delete clientMap[id];
+    else clientMap[id] = parseFloat(v);
+  });
+  state.customPricing[state.selectedPricingClient] = clientMap;
+  saveCustomPricing();
+  toast('Grille tarifaire enregistrée');
+  render();
+}
+
+function onSubmitApplication(){
+  const err = document.getElementById('applyErr');
+  const prenom = document.getElementById('cvPrenom').value.trim();
+  const nom = document.getElementById('cvNom').value.trim();
+  const tel = document.getElementById('cvTel').value.trim();
+  if(!prenom || !nom || !tel){
+    err.style.display='block';
+    err.textContent = 'Prénom, nom et téléphone requis.';
+    return;
+  }
+  const cv = {
+    id: 'cv_'+Date.now(),
+    date: new Date().toISOString(),
+    prenom, nom, tel,
+    age: document.getElementById('cvAge').value,
+    competences: document.getElementById('cvCompetences').value.trim(),
+    qualites: document.getElementById('cvQualites').value.trim(),
+    defauts: document.getElementById('cvDefauts').value.trim(),
+    experience: document.getElementById('cvExperience').value.trim(),
+    motivation: document.getElementById('cvMotivation').value.trim(),
+    dispo: document.getElementById('cvDispo').value.trim(),
+    status: 'attente'
+  };
+  state.applications.push(cv);
+  saveApplications();
+  setState({applyOpen:false});
+  toast('Candidature envoyée avec succès !');
+}
+function onDelCV(id){
+  if(confirm("Supprimer cette candidature ?")){
+    state.applications = state.applications.filter(a=>a.id!==id);
+    saveApplications();
+    render();
+  }
+}
+function onUpdateCV(id, st){
+  const a = state.applications.find(x=>x.id===id);
+  if(a){ a.status=st; saveApplications(); render(); }
+}
+
+async function onConfirmExport(){
+  const current = (state.production && state.production.maxCartons) ? state.production.maxCartons : 0;
+  const pending = state.cartonsPending || 0;
+  if(pending <= 0) return;
+  const newMax = current + pending;
+  
+  state.production = {maxCartons: newMax, updatedAt: new Date().toISOString()};
+  await saveProduction();
+  
+  state.exportHistory.push({
+    id: 'ex_'+Date.now(),
+    date: new Date().toISOString(),
+    username: state.auth.username,
+    role: state.auth.role,
+    amount: pending,
+    totalAfter: newMax
+  });
+  await saveExportHistory();
+
+  setState({cartonsPending:0});
+  toast(pending + ' cartons ajoutés au stock global !');
+}
+
+function onConfirmAddStock(){
+  const pid = document.getElementById('stockProductSelect').value;
+  const qty = parseInt(document.getElementById('stockQtyInput').value, 10);
+  if(!pid || isNaN(qty) || qty<=0) return toast('Erreur de saisie');
+  const p = state.catalog.find(x=>x.id===pid);
+  if(p){
+    p.qty = (p.qty||0) + qty;
+    saveCatalog();
+    setState({stockModalOpen:false});
+    toast('Stock mis à jour avec succès');
+  }
+}
+
+function onAddPartner(){
+  const name = document.getElementById('partnerNameInput').value.trim();
+  const desc = document.getElementById('partnerDescInput').value.trim();
+  const act = document.getElementById('partnerActiveInput').checked;
+  if(!name) return;
+  state.partnerships.push({
+    id: 'pt_'+Date.now(),
+    name, description:desc, active:act,
+    createdAt: new Date().toISOString()
+  });
+  savePartnerships();
+  setState({partnerModalOpen:false});
+  toast('Partenariat ajouté');
+}
+function onDelPartner(id){
+  if(confirm('Supprimer ce partenariat ?')){
+    state.partnerships = state.partnerships.filter(p=>p.id!==id);
+    savePartnerships();
+    render();
+  }
+}
+function onTogglePartner(id){
+  const p = state.partnerships.find(x=>x.id===id);
+  if(p){ p.active = !p.active; savePartnerships(); render(); }
+}
+
+loadAll();
+</script>
+</body>
+</html>
